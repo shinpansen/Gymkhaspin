@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bgoio1t8ht7nk"]
+
+[ext_resource type="PackedScene" uid="uid://1omh5j35qpx0" path="res://assets/models/wheel.glb" id="1_6ey8n"]
+[ext_resource type="Script" uid="uid://bl30r5rorchri" path="res://scripts/vehicle/wheel.gd" id="2_em3co"]
+
+[node name="Wheel" unique_id=848662349 instance=ExtResource("1_6ey8n")]
+script = ExtResource("2_em3co")
+
+[node name="RayCast3D" type="RayCast3D" parent="." index="1" unique_id=809862932]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.41329122, 0)
