@@ -2,6 +2,8 @@
 
 [ext_resource type="Shader" uid="uid://bx60rb1xl0641" path="res://assets/shaders/simple_sky.gdshader" id="1_bl13t"]
 [ext_resource type="PackedScene" uid="uid://b4xylhi0vnorx" path="res://scenes/vehicle/vehicle.tscn" id="2_bl13t"]
+[ext_resource type="Script" uid="uid://d05w1gkho54oe" path="res://scripts/camera.gd" id="2_iyx0m"]
+[ext_resource type="Texture2D" uid="uid://cb6j462dt846s" path="res://assets/textures/16_diffuseOriginal.bmp" id="3_74lek"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_74lek"]
 shader = ExtResource("1_bl13t")
@@ -27,11 +29,24 @@ glow_enabled = true
 glow_intensity = 0.5
 glow_bloom = 0.1
 
-[sub_resource type="BoxMesh" id="BoxMesh_wccwa"]
-size = Vector3(1000, 0.2, 1000)
+[sub_resource type="PlaneMesh" id="PlaneMesh_j5jx5"]
+size = Vector2(500, 500)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lpvoh"]
+albedo_color = Color(0.86156166, 0.31936127, 0, 1)
+albedo_texture = ExtResource("3_74lek")
+metallic = 0.5
+roughness = 0.5
+uv1_scale = Vector3(250, 250, 250)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_iyx0m"]
 size = Vector3(1000, 0.2, 1000)
+
+[sub_resource type="BoxMesh" id="BoxMesh_xc1so"]
+size = Vector3(1, 6.8553467, 24.605835)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_74lek"]
+size = Vector3(1, 6.8553467, 24.605835)
 
 [node name="Test" type="Node3D" unique_id=2053984469]
 
@@ -42,16 +57,31 @@ environment = SubResource("Environment_wccwa")
 transform = Transform3D(-0.8666564, -0.38674706, 0.315172, 0.49064752, -0.7751678, 0.39797005, 0.09039734, 0.4995417, 0.8615606, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Camera" type="Camera3D" parent="." unique_id=2118617192]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 1.2302897, 1.3703163, -3.1097605)
+[node name="SimpleFollowCamera" type="Camera3D" parent="." unique_id=754751169 node_paths=PackedStringArray("vehicle_to_follow")]
+transform = Transform3D(-1, 1.7763568e-15, -8.742278e-08, -2.262668e-08, 0.9659259, 0.25881907, 8.444392e-08, 0.25881907, -0.9659258, 0, 3.3477771, -2.8624225)
+script = ExtResource("2_iyx0m")
+vehicle_to_follow = NodePath("../Vehicle")
+metadata/_custom_type_script = "uid://d05w1gkho54oe"
 
 [node name="Floor" type="StaticBody3D" parent="." unique_id=1888477577]
 
 [node name="Mesh" type="MeshInstance3D" parent="Floor" unique_id=401234620]
-mesh = SubResource("BoxMesh_wccwa")
+mesh = SubResource("PlaneMesh_j5jx5")
+surface_material_override/0 = SubResource("StandardMaterial3D_lpvoh")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=90296243]
 shape = SubResource("BoxShape3D_iyx0m")
 
 [node name="Vehicle" parent="." unique_id=305288457 instance=ExtResource("2_bl13t")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87184775, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.915341, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1700286750]
+transform = Transform3D(0.3666679, -0.9303519, 0, 0.91610146, 0.36105156, 0.17435552, -0.162212, -0.06393057, 0.98468274, 0, -9.696171, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=1692592674]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
+mesh = SubResource("BoxMesh_xc1so")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=846442473]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
+shape = SubResource("BoxShape3D_74lek")
