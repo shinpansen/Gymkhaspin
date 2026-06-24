@@ -68,9 +68,6 @@ func _ready() -> void:
 	_brake_lights_material = brake_light.get_active_material(1)
 
 func _process(delta: float) -> void:
-	if Input.is_action_just_pressed("ui_accept"):
-		apply_force(Vector3.UP * 5000.0)
-
 	_handle_inputs(delta)
 	_handle_damping(delta)
 	_calculate_floor_normal()
