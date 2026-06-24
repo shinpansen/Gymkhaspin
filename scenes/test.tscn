@@ -42,11 +42,26 @@ uv1_scale = Vector3(250, 250, 250)
 [sub_resource type="BoxShape3D" id="BoxShape3D_iyx0m"]
 size = Vector3(1000, 0.2, 1000)
 
+[sub_resource type="LabelSettings" id="LabelSettings_74lek"]
+font_size = 42
+
 [sub_resource type="BoxMesh" id="BoxMesh_xc1so"]
 size = Vector3(1, 6.8553467, 24.605835)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_74lek"]
 size = Vector3(1, 6.8553467, 24.605835)
+
+[sub_resource type="Curve3D" id="Curve3D_74lek"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2aj0h"]
+shading_mode = 0
+albedo_color = Color(0.15487596, 0.154876, 0.15487596, 1)
+
+[sub_resource type="Curve3D" id="Curve3D_j5jx5"]
+
+[sub_resource type="Curve3D" id="Curve3D_lpvoh"]
+
+[sub_resource type="Curve3D" id="Curve3D_at5dv"]
 
 [node name="Test" type="Node3D" unique_id=2053984469]
 
@@ -66,6 +81,7 @@ metadata/_custom_type_script = "uid://d05w1gkho54oe"
 [node name="Floor" type="StaticBody3D" parent="." unique_id=1888477577]
 
 [node name="Mesh" type="MeshInstance3D" parent="Floor" unique_id=401234620]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09795463, 0)
 mesh = SubResource("PlaneMesh_j5jx5")
 surface_material_override/0 = SubResource("StandardMaterial3D_lpvoh")
 
@@ -74,6 +90,17 @@ shape = SubResource("BoxShape3D_iyx0m")
 
 [node name="Vehicle" parent="." unique_id=305288457 instance=ExtResource("2_bl13t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.915341, 0)
+
+[node name="UI" type="Node" parent="." unique_id=1395755460]
+
+[node name="LabelSpeed" type="Label" parent="UI" unique_id=1581957390]
+unique_name_in_owner = true
+offset_left = 28.0
+offset_top = 18.0
+offset_right = 374.0
+offset_bottom = 135.0
+text = "Speed"
+label_settings = SubResource("LabelSettings_74lek")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1700286750]
 transform = Transform3D(0.3666679, -0.9303519, 0, 0.91610146, 0.36105156, 0.17435552, -0.162212, -0.06393057, 0.98468274, 0, -9.696171, 0)
@@ -85,3 +112,111 @@ mesh = SubResource("BoxMesh_xc1so")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=846442473]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
 shape = SubResource("BoxShape3D_74lek")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="." unique_id=1381942049]
+transform = Transform3D(-4.371138e-08, -0.99999994, 0, 0.99999994, -4.371139e-08, 0, 0, 0, 0.9999999, 16.767914, -2.0759993, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2" unique_id=481470903]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
+mesh = SubResource("BoxMesh_xc1so")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2" unique_id=666722984]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
+shape = SubResource("BoxShape3D_74lek")
+
+[node name="StaticBody3D3" type="StaticBody3D" parent="." unique_id=992739203]
+transform = Transform3D(0.0026957763, -0.99999607, 0.0007403143, 0.9529152, 0.0027933384, 0.3032239, -0.30322483, -0.00011196719, 0.952919, 16.768, -8.545, -21.09)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D3" unique_id=518131465]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
+mesh = SubResource("BoxMesh_xc1so")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3" unique_id=1195474320]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
+shape = SubResource("BoxShape3D_74lek")
+
+[node name="SkidMarks" type="Node3D" parent="." unique_id=258619197]
+
+[node name="SkidMarkPath1" type="Path3D" parent="SkidMarks" unique_id=228282210]
+unique_name_in_owner = true
+curve = SubResource("Curve3D_74lek")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="SkidMarks/SkidMarkPath1" unique_id=714954352]
+cast_shadow = 0
+calculate_tangents = false
+polygon = PackedVector2Array(-0.08, -0.02, 0.08, -0.02, 0.08, 0.02, -0.08, 0.02)
+mode = 2
+path_node = NodePath("..")
+path_interval_type = 0
+path_interval = 0.5
+path_simplify_angle = 0.0
+path_rotation = 2
+path_rotation_accurate = false
+path_local = false
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false
+material = SubResource("StandardMaterial3D_2aj0h")
+
+[node name="SkidMarkPath2" type="Path3D" parent="SkidMarks" unique_id=1051117828]
+unique_name_in_owner = true
+curve = SubResource("Curve3D_j5jx5")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="SkidMarks/SkidMarkPath2" unique_id=208447144]
+cast_shadow = 0
+calculate_tangents = false
+polygon = PackedVector2Array(-0.08, -0.02, 0.08, -0.02, 0.08, 0.02, -0.08, 0.02)
+mode = 2
+path_node = NodePath("..")
+path_interval_type = 0
+path_interval = 0.5
+path_simplify_angle = 0.0
+path_rotation = 2
+path_rotation_accurate = false
+path_local = false
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false
+material = SubResource("StandardMaterial3D_2aj0h")
+
+[node name="SkidMarkPath3" type="Path3D" parent="SkidMarks" unique_id=953794683]
+unique_name_in_owner = true
+curve = SubResource("Curve3D_lpvoh")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="SkidMarks/SkidMarkPath3" unique_id=1542587104]
+cast_shadow = 0
+calculate_tangents = false
+polygon = PackedVector2Array(-0.08, -0.02, 0.08, -0.02, 0.08, 0.02, -0.08, 0.02)
+mode = 2
+path_node = NodePath("..")
+path_interval_type = 0
+path_interval = 0.5
+path_simplify_angle = 0.0
+path_rotation = 2
+path_rotation_accurate = false
+path_local = false
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false
+material = SubResource("StandardMaterial3D_2aj0h")
+
+[node name="SkidMarkPath4" type="Path3D" parent="SkidMarks" unique_id=1551217248]
+unique_name_in_owner = true
+curve = SubResource("Curve3D_at5dv")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="SkidMarks/SkidMarkPath4" unique_id=371463796]
+cast_shadow = 0
+calculate_tangents = false
+polygon = PackedVector2Array(-0.08, -0.02, 0.08, -0.02, 0.08, 0.02, -0.08, 0.02)
+mode = 2
+path_node = NodePath("..")
+path_interval_type = 0
+path_interval = 0.5
+path_simplify_angle = 0.0
+path_rotation = 2
+path_rotation_accurate = false
+path_local = false
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false
+material = SubResource("StandardMaterial3D_2aj0h")

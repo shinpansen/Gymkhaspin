@@ -14,21 +14,23 @@ points = PackedVector3Array(0.57418764, 0.2677446, -1.1772699, -0.57418764, 0.26
 collision_layer = 2
 mass = 5.0
 physics_material_override = SubResource("PhysicsMaterial_j5jx5")
-gravity_scale = 3.0
+gravity_scale = 2.5
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, -0.5, 0)
 linear_damp = 1.0
 angular_damp = 3.0
 script = ExtResource("1_udt0a")
+cornering_force = 12.0
 max_torque = 90.0
-acceleration = 5.0
+side_speed_drift = 5.0
+side_speed_grip = 2.5
 linear_damping = 0.5
 tilt_ratio = 0.2
 wheels = [NodePath("Wheels/WheelFR"), NodePath("Wheels/WheelFL"), NodePath("Wheels/WheelBR"), NodePath("Wheels/WheelBL")]
 
 [node name="Van" parent="." unique_id=1222573554 instance=ExtResource("1_1nnvc")]
 
-[node name="CollisionShape3D" parent="Van/Cube" parent_id_path=PackedInt32Array(1222573554, 635056199) index="0" unique_id=631434441]
+[node name="CollisionShape3D" parent="Van/Cube" parent_id_path=PackedInt32Array(1222573554, 1236912035) index="0" unique_id=2005483167]
 disabled = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1915448020]
@@ -39,20 +41,26 @@ shape = SubResource("ConvexPolygonShape3D_oai6t")
 [node name="WheelFR" parent="Wheels" unique_id=848662349 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47, 0.123, 0.756)
 parent_vehicle = NodePath("../..")
+skid_mark_path_name = "SkidMarks/SkidMarkPath1"
+steering_wheel = true
 
 [node name="WheelFL" parent="Wheels" unique_id=1556392534 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, 1, -0.47, 0.123, 0.756)
 parent_vehicle = NodePath("../..")
+skid_mark_path_name = "SkidMarks/SkidMarkPath2"
+steering_wheel = true
 
 [node name="WheelBR" parent="Wheels" unique_id=43651871 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47, 0.123, -0.677)
 parent_vehicle = NodePath("../..")
-suspension_force = 160.0
+suspension_force = 170.0
+skid_mark_path_name = "SkidMarks/SkidMarkPath3"
 
 [node name="WheelBL" parent="Wheels" unique_id=933371801 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, 1, -0.47, 0.123, -0.677)
 parent_vehicle = NodePath("../..")
-suspension_force = 160.0
+suspension_force = 170.0
+skid_mark_path_name = "SkidMarks/SkidMarkPath4"
 
 [node name="LocalRayCasts" type="Node3D" parent="." unique_id=1771909523]
 

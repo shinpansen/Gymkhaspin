@@ -1,0 +1,40 @@
+TODO :
+	- Roues avant qui pivotent -> OK
+	- Roues qui tournent avec la vitesse -> OK
+	- Marques de pneu -> En cours
+	- Lumière de freinage -> OK
+	- Fumée ??? (si du temps)
+	- Caméra plus dynamique
+	- Frain à main -> OK
+	- Inputs -> En cours
+	
+Game design
+	- Temps qui défile
+	- Chaque complétion de plot redonne du temps et du score
+	- Chaque fin de run -> upgrade
+
+Upgrades :
+	- Meilleur accéleration / vitesse max / drift ?
+	- Combo dur plus longtemps
+	- Drift fait plus de score
+	- Gagne plus de temps à chaque complétion
+
+Gérer le score :
+	- Créer un score global
+	- Créer un multiplicateur
+	- Créer des plots qui compte le score
+
+Plots :
+	- Classe générique avec une scene au centre
+	- Un radius
+	- Un score pour le valider
+	- Cercle lumineux autour qui démarque le radius
+	- Cercle qui se remplie avec le score qui monte
+
+Environnement : 
+	- Faire des sapins
+	- Faire des barrière
+	- Faire un grand pont suspendu
+	- Barrière tout autour de la map en cercle
+	- Sapins partout à l'extérieur
+	- Pont suspendu au dessus

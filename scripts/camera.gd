@@ -2,10 +2,11 @@ class_name SimpleFollowCamera
 extends Camera3D
 
 @export var vehicle_to_follow: Vehicle
+@export var lerp_speed: float = 1.0
+@export var fov_multiplier: float = 2.0
 
 var _base_distance: float
 var _base_y_gap: float
-var _lerp_speed: float = 2.0
 var _base_fov: float
 
 func _ready() -> void:
@@ -14,10 +15,10 @@ func _ready() -> void:
 	_base_distance = global_position.distance_to(vehicle_to_follow.global_position)
 
 func _process(delta: float) -> void:
-	var fov_offset: float = vehicle_to_follow.current_acceleration
+	var fov_offset: float = vehicle_to_follow.current_acceleration * fov_multiplier
 	if fov_offset < 0: fov_offset /= 2.0
 	var traget_fov: float = _base_fov + fov_offset
-	fov = lerpf(fov, traget_fov, delta * _lerp_speed)
+	fov = lerpf(fov, traget_fov, delta * lerp_speed)
 
 func _physics_process(delta: float) -> void:
 	var target_position: Vector3 = vehicle_to_follow.global_position
