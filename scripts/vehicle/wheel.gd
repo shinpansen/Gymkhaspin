@@ -11,9 +11,9 @@ extends Node3D
 @export var steering_wheel: bool
 @export var driving_wheel: bool = true
 
-var skid_mark_path_started: bool:
-	get: return _skid_mark_path_started
-	set(_value): assert(false, "skid_mark_path_started is read-only")
+var skid_mark_started: bool:
+	get: return _skid_mark_started
+	set(_value): assert(false, "skid_mark_started is read-only")
 
 var wheel_boxing: Node3D
 var wheel_mesh: MeshInstance3D
@@ -22,12 +22,12 @@ var _raycast: RayCast3D
 var _wheel_radius: float
 var _wheel_distance_to_raycast: float
 var _skid_mark_curve: Curve3D
-var _skid_mark_path_started: bool
+var _skid_mark_started: bool
 
 func _ready() -> void:
 	wheel_boxing = %WheelBoxing
 	wheel_mesh = %WheelMesh
-	_skid_mark_curve = get_tree().current_scene.get_node(skid_mark_path_name).curve
+	# _skid_mark_curve = get_tree().current_scene.get_node(skid_mark_path_name).curve
 	_raycast = %RayCast3D
 	_wheel_radius = wheel_mesh.get_aabb().size.y / 2.0
 	_wheel_distance_to_raycast = _raycast.global_position.distance_to(wheel_mesh.global_position)
@@ -44,11 +44,11 @@ func on_ground() -> bool:
 	return true
 
 func start_skid_mark() -> void:
-	_skid_mark_path_started = true
-	_skid_mark_curve.clear_points()
+	_skid_mark_started = true
+	_skid_mark_curve = SkidMarksFactory.request_path().curve
 
 func draw_skid_mark() -> void:
-	if !_skid_mark_path_started: return
+	if !_skid_mark_started: return
 	elif !on_ground(): 
 		end_skid_mark()
 		return
@@ -61,11 +61,11 @@ func draw_skid_mark() -> void:
 		return
 	
 	_skid_mark_curve.add_point(hit_point)
-	if _skid_mark_curve.point_count > skid_mark_points_count:
-		_skid_mark_curve.remove_point(0)
+	# if _skid_mark_curve.point_count > skid_mark_points_count:
+	# 	_skid_mark_curve.remove_point(0)
 	
 func end_skid_mark() -> void:
-	_skid_mark_path_started = false
+	_skid_mark_started = false
 
 func _apply_suspension_force(delta: float) -> void:
 	var hit_distance: float = _get_suspension_distance_to_collision()

@@ -51,18 +51,6 @@ size = Vector3(1, 6.8553467, 24.605835)
 [sub_resource type="BoxShape3D" id="BoxShape3D_74lek"]
 size = Vector3(1, 6.8553467, 24.605835)
 
-[sub_resource type="Curve3D" id="Curve3D_74lek"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2aj0h"]
-shading_mode = 0
-albedo_color = Color(0.15487596, 0.154876, 0.15487596, 1)
-
-[sub_resource type="Curve3D" id="Curve3D_j5jx5"]
-
-[sub_resource type="Curve3D" id="Curve3D_lpvoh"]
-
-[sub_resource type="Curve3D" id="Curve3D_at5dv"]
-
 [node name="Test" type="Node3D" unique_id=2053984469]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=295061537]
@@ -134,89 +122,3 @@ mesh = SubResource("BoxMesh_xc1so")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3" unique_id=1195474320]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
 shape = SubResource("BoxShape3D_74lek")
-
-[node name="SkidMarks" type="Node3D" parent="." unique_id=258619197]
-
-[node name="SkidMarkPath1" type="Path3D" parent="SkidMarks" unique_id=228282210]
-unique_name_in_owner = true
-curve = SubResource("Curve3D_74lek")
-
-[node name="CSGPolygon3D" type="CSGPolygon3D" parent="SkidMarks/SkidMarkPath1" unique_id=714954352]
-cast_shadow = 0
-calculate_tangents = false
-polygon = PackedVector2Array(-0.08, -0.02, 0.08, -0.02, 0.08, 0.02, -0.08, 0.02)
-mode = 2
-path_node = NodePath("..")
-path_interval_type = 0
-path_interval = 0.5
-path_simplify_angle = 0.0
-path_rotation = 2
-path_rotation_accurate = false
-path_local = false
-path_continuous_u = true
-path_u_distance = 1.0
-path_joined = false
-material = SubResource("StandardMaterial3D_2aj0h")
-
-[node name="SkidMarkPath2" type="Path3D" parent="SkidMarks" unique_id=1051117828]
-unique_name_in_owner = true
-curve = SubResource("Curve3D_j5jx5")
-
-[node name="CSGPolygon3D" type="CSGPolygon3D" parent="SkidMarks/SkidMarkPath2" unique_id=208447144]
-cast_shadow = 0
-calculate_tangents = false
-polygon = PackedVector2Array(-0.08, -0.02, 0.08, -0.02, 0.08, 0.02, -0.08, 0.02)
-mode = 2
-path_node = NodePath("..")
-path_interval_type = 0
-path_interval = 0.5
-path_simplify_angle = 0.0
-path_rotation = 2
-path_rotation_accurate = false
-path_local = false
-path_continuous_u = true
-path_u_distance = 1.0
-path_joined = false
-material = SubResource("StandardMaterial3D_2aj0h")
-
-[node name="SkidMarkPath3" type="Path3D" parent="SkidMarks" unique_id=953794683]
-unique_name_in_owner = true
-curve = SubResource("Curve3D_lpvoh")
-
-[node name="CSGPolygon3D" type="CSGPolygon3D" parent="SkidMarks/SkidMarkPath3" unique_id=1542587104]
-cast_shadow = 0
-calculate_tangents = false
-polygon = PackedVector2Array(-0.08, -0.02, 0.08, -0.02, 0.08, 0.02, -0.08, 0.02)
-mode = 2
-path_node = NodePath("..")
-path_interval_type = 0
-path_interval = 0.5
-path_simplify_angle = 0.0
-path_rotation = 2
-path_rotation_accurate = false
-path_local = false
-path_continuous_u = true
-path_u_distance = 1.0
-path_joined = false
-material = SubResource("StandardMaterial3D_2aj0h")
-
-[node name="SkidMarkPath4" type="Path3D" parent="SkidMarks" unique_id=1551217248]
-unique_name_in_owner = true
-curve = SubResource("Curve3D_at5dv")
-
-[node name="CSGPolygon3D" type="CSGPolygon3D" parent="SkidMarks/SkidMarkPath4" unique_id=371463796]
-cast_shadow = 0
-calculate_tangents = false
-polygon = PackedVector2Array(-0.08, -0.02, 0.08, -0.02, 0.08, 0.02, -0.08, 0.02)
-mode = 2
-path_node = NodePath("..")
-path_interval_type = 0
-path_interval = 0.5
-path_simplify_angle = 0.0
-path_rotation = 2
-path_rotation_accurate = false
-path_local = false
-path_continuous_u = true
-path_u_distance = 1.0
-path_joined = false
-material = SubResource("StandardMaterial3D_2aj0h")

@@ -22,9 +22,6 @@ angular_damp = 3.0
 script = ExtResource("1_udt0a")
 cornering_force = 12.0
 max_torque = 90.0
-side_speed_drift = 5.0
-side_speed_grip = 2.5
-linear_damping = 0.5
 tilt_ratio = 0.2
 wheels = [NodePath("Wheels/WheelFR"), NodePath("Wheels/WheelFL"), NodePath("Wheels/WheelBR"), NodePath("Wheels/WheelBL")]
 

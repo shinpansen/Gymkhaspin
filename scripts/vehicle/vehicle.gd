@@ -1,13 +1,14 @@
 class_name Vehicle
 extends RigidBody3D
 
-@export var cornering_force: float = 15.0
-@export var max_torque: float = 120.0
-@export var acceleration_force: float = 30.0
+@export var cornering_force: float = 12.0
+@export var max_torque: float = 90.0
+@export var acceleration_force: float = 5.0
+@export var deceleration_force: float = 2.0
 @export var friction_force: float = 6.0
-@export var side_speed_drift: float = 6.0
-@export var side_speed_grip: float = 3.0
-@export var linear_damping: float = 1.0
+@export var side_speed_drift: float = 5.0
+@export var side_speed_grip: float = 2.0
+@export var linear_damping: float = 0.5
 @export var suspension_damping: float = 8.0
 @export var tilt_ratio: float = 0.3
 @export var wheels: Array[Wheel] = []
@@ -41,6 +42,7 @@ var _front_raycast: RayCast3D
 var _back_raycast: RayCast3D
 var _left_raycast: RayCast3D
 var _right_raycast: RayCast3D
+var _brake_lights_material: StandardMaterial3D
 
 var _floor_normal: Vector3
 var _current_torque: float
@@ -51,7 +53,9 @@ var _hand_brake: bool
 var _current_acceleration: float
 var _current_suspension_damping: float
 var _previous_speed: float
-var _brake_lights_material: StandardMaterial3D
+
+var _gears_ratio: Array[float] = [0.33, 0.66, 1.0]
+var _current_gear: int = 0
 
 func _ready() -> void:
 	_front_raycast = %FrontRayCast
@@ -71,7 +75,7 @@ func _process(delta: float) -> void:
 	_handle_inputs(delta)
 	_handle_damping(delta)
 	_calculate_floor_normal()
-	_handle_movement()
+	_handle_acceleration()
 	_handle_cornering()
 	_add_side_friction_force(delta)
 	_handle_drift()
@@ -81,6 +85,7 @@ func _process(delta: float) -> void:
 
 	########### DEBUG ##############
 	%LabelSpeed.text = str(round(speed * 6.0), 0) + " km/h"
+	%LabelSpeed.text = str(round(_current_torque), 1) + " nm"
 
 func _physics_process(delta: float) -> void:
 	var forward_speed: float = speed
@@ -102,7 +107,8 @@ func _handle_inputs(delta: float) -> void:
 		else -1.0 if Input.is_action_pressed("cmd_brake")
 		else 0.0
 	)
-	_current_torque = lerpf(_current_torque, max_torque * _acceleration_sign, acceleration_force * delta)
+	var weight: float = deceleration_force if _acceleration_sign == 0.0 else acceleration_force
+	_current_torque = lerpf(_current_torque, max_torque * _acceleration_sign, weight * delta)
 
 	# Hand brake
 	if Input.is_action_pressed("cmd_hand_brake"):
@@ -117,7 +123,7 @@ func _handle_damping(delta) -> void:
 	else:
 		_current_suspension_damping = lerpf(_current_suspension_damping, 0.0, delta * 10.0)
 
-func _handle_movement() -> void:
+func _handle_acceleration() -> void:
 	linear_damp = linear_damping if _on_ground() else 0.0
 	apply_central_force(forward_vector.normalized() * _current_torque)
 
@@ -130,6 +136,7 @@ func _handle_cornering() -> void:
 	apply_torque(Vector3(0.0, input_direction.x, 0.0) * deg_to_rad(90.0) * force)
 
 func _add_side_friction_force(delta: float) -> void:
+	print(side_speed)
 	if !_on_ground: return
 	var friction_target: float = 0.0 if _is_drifting else friction_force
 
@@ -140,14 +147,13 @@ func _add_side_friction_force(delta: float) -> void:
 			if !_is_drifting
 			else friction_force * (8.0 - speed) / 10.0
 		)
-
 	_current_friction = lerpf(_current_friction, friction_target, delta * 10.0)
 	apply_central_force(_get_side_vector() * -side_speed * mass * _current_friction)
 
 func _handle_drift() -> void:
 	if _hand_brake: return
 	
-	var grip_speed: float = side_speed_drift * 1.2 if !is_throttling else side_speed_drift
+	var grip_speed: float = side_speed_grip * 1.2 if !is_throttling else side_speed_grip
 	if !_is_drifting && (abs(side_speed) > side_speed_drift || !_on_ground()):
 		_is_drifting = true
 	elif _is_drifting && abs(side_speed) < grip_speed:
@@ -182,7 +188,7 @@ func _apply_visual_tweaks(delta: float) -> void:
 			delta * 10.0)
 			
 	# Braking lights
-	var energy_target: float = 2.0 if is_braking else 1.2
+	var energy_target: float = 2.0 if is_braking else 1.0
 	_brake_lights_material.emission_energy_multiplier = lerpf(
 		_brake_lights_material.emission_energy_multiplier,
 		energy_target,
@@ -193,7 +199,7 @@ func _draw_skid_marks() -> void:
 	var must_draw: bool = _is_drifting || is_braking
 	for w: Wheel in wheels:
 		if must_draw || (current_acceleration > 10 && !w.steering_wheel):
-			if !w.skid_mark_path_started: w.start_skid_mark()
+			if !w.skid_mark_started: w.start_skid_mark()
 			w.draw_skid_mark()
 		else:
 			w.end_skid_mark()

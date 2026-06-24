@@ -1,12 +1,13 @@
 TODO :
 	- Roues avant qui pivotent -> OK
 	- Roues qui tournent avec la vitesse -> OK
-	- Marques de pneu -> En cours
+	- Marques de pneu -> OK
 	- Lumière de freinage -> OK
 	- Fumée ??? (si du temps)
 	- Caméra plus dynamique
 	- Frain à main -> OK
 	- Inputs -> En cours
+	- Vitesses ???
 	
 Game design
 	- Temps qui défile
