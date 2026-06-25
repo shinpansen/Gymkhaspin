@@ -37,6 +37,9 @@ var is_throttling: bool:
 var is_braking: bool:
 	get: return Input.is_action_pressed("cmd_brake", 0.2) && signed_speed < -1 || Input.is_action_pressed("cmd_throttle", 0.2) && signed_speed > 1
 	set(_value): assert(false, "is_braking is read-only")
+var is_drifting: bool:
+	get: return _is_drifting
+	set(_value): assert(false, "is_drifting is read-only")
 
 var _front_raycast: RayCast3D
 var _back_raycast: RayCast3D
@@ -55,12 +58,7 @@ var _current_suspension_damping: float
 var _previous_speed: float
 var _has_just_landed_duration: float = 0.0
 
-var dist_test: float
-
 func _ready() -> void:
-	var mesh_test: MeshInstance3D = %MeshInstance3D
-	dist_test = mesh_test.global_position.distance_to(global_position)
-
 	_front_raycast = %FrontRayCast
 	_back_raycast = %BackRayCast
 	_left_raycast = %LeftRayCast
@@ -90,14 +88,6 @@ func _process(delta: float) -> void:
 	########### DEBUG ##############
 	%LabelSpeed.text = str(round(speed * 6.0)) + " km/h"
 	%LabelSpeed.text += "\n" + str(round(_current_torque)) + " nm"
-
-	var mesh_test: MeshInstance3D = %MeshInstance3D
-	var target_rot: float = 270 - rotation_degrees.y - side_speed * 2.0
-	_rot = lerp_angle(_rot, target_rot, delta * 20.0) 
-	var pos: Vector3 = MathUtils.get_position_on_circle(global_position, dist_test, _rot)
-	pos.y += 1.7
-	mesh_test.global_position = pos
-
 
 func _physics_process(delta: float) -> void:
 	var forward_speed: float = speed
@@ -146,7 +136,7 @@ func _handle_acceleration(delta: float) -> void:
 func _handle_cornering() -> void:
 	var force: float = cornering_force
 	if !_on_ground(): force /= 4.0
-	elif speed < 8.0: force *= speed * 0.125
+	elif speed < 6.0: force *= speed * 0.125
 
 	force *= -sign(signed_speed)
 	apply_torque(Vector3(0.0, input_direction.x, 0.0) * deg_to_rad(90.0) * force)

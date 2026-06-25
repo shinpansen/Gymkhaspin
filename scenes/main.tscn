@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://naosb5s388ig" path="res://assets/textures/6_diffuseOriginal.bmp" id="3_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://b4xylhi0vnorx" path="res://scenes/vehicle/vehicle.tscn" id="4_o6xl0"]
 [ext_resource type="Texture2D" uid="uid://1twkahviwh0w" path="res://assets/textures/6_normal.bmp" id="4_tbgi4"]
-[ext_resource type="PackedScene" uid="uid://c7jn2cly5kg8i" path="res://assets/models/traffic_cone.glb" id="6_tefeu"]
+[ext_resource type="PackedScene" uid="uid://p2mwmq62svfp" path="res://scenes/spinners/traffic_cone.tscn" id="7_o6xl0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_74lek"]
 shader = ExtResource("1_jyhfs")
@@ -45,10 +45,6 @@ uv1_scale = Vector3(100, 100, 100)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_iyx0m"]
 size = Vector3(1000, 0.2, 1000)
-
-[sub_resource type="SphereMesh" id="SphereMesh_tefeu"]
-radius = 0.2
-height = 0.4
 
 [sub_resource type="LabelSettings" id="LabelSettings_74lek"]
 font_size = 42
@@ -92,13 +88,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_lpvoh")
 shape = SubResource("BoxShape3D_iyx0m")
 
 [node name="Vehicle" parent="." unique_id=305288457 instance=ExtResource("4_o6xl0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12371588, 0)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1760597120]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.124, -3.0859785)
-visible = false
-mesh = SubResource("SphereMesh_tefeu")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1391617, 0)
 
 [node name="UI" type="Node" parent="." unique_id=1395755460]
 
@@ -144,5 +134,5 @@ mesh = SubResource("BoxMesh_xc1so")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
 shape = SubResource("BoxShape3D_74lek")
 
-[node name="traffic_cone" parent="." unique_id=845373845 instance=ExtResource("6_tefeu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.029818, 0.5703794, 7.48015)
+[node name="TrafficCone" parent="." unique_id=850214933 instance=ExtResource("7_o6xl0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.97462, 0.09652233, 6.3738074)

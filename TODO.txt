@@ -8,7 +8,7 @@ TODO :
 	- Linear damping pour bloqué la voiture à l'arrêt -> OK
 	- Sons moteur !!!
 	- Inputs -> En cours
-	- Caméra plus dynamique -> annulé
+	- Caméra plus dynamique -> OK
 	- Fumée drift
 	
 Game design
