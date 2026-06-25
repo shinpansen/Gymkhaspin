@@ -53,11 +53,13 @@ var _hand_brake: bool
 var _current_acceleration: float
 var _current_suspension_damping: float
 var _previous_speed: float
+var _has_just_landed_duration: float = 0.0
 
 var _gears_ratio: Array[float] = [0.33, 0.66, 1.0]
 var _current_gear: int = 0
 
 func _ready() -> void:
+	max_torque *= _gears_ratio[0]
 	_front_raycast = %FrontRayCast
 	_back_raycast = %BackRayCast
 	_left_raycast = %LeftRayCast
@@ -78,19 +80,20 @@ func _process(delta: float) -> void:
 	_handle_acceleration()
 	_handle_cornering()
 	_add_side_friction_force(delta)
-	_handle_drift()
+	_handle_drift(delta)
 	_apply_tilt_tweak()
 	_apply_visual_tweaks(delta)
 	_draw_skid_marks()
 
 	########### DEBUG ##############
 	%LabelSpeed.text = str(round(speed * 6.0), 0) + " km/h"
-	%LabelSpeed.text = str(round(_current_torque), 1) + " nm"
+	%LabelSpeed.text += "\n" + str(round(_current_torque), 1) + " nm"
 
 func _physics_process(delta: float) -> void:
 	var forward_speed: float = speed
 	_current_acceleration = (forward_speed - _previous_speed) / delta
 	_previous_speed = forward_speed
+
 
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	if _current_suspension_damping == 0.0: return
@@ -136,7 +139,6 @@ func _handle_cornering() -> void:
 	apply_torque(Vector3(0.0, input_direction.x, 0.0) * deg_to_rad(90.0) * force)
 
 func _add_side_friction_force(delta: float) -> void:
-	print(side_speed)
 	if !_on_ground: return
 	var friction_target: float = 0.0 if _is_drifting else friction_force
 
@@ -150,11 +152,14 @@ func _add_side_friction_force(delta: float) -> void:
 	_current_friction = lerpf(_current_friction, friction_target, delta * 10.0)
 	apply_central_force(_get_side_vector() * -side_speed * mass * _current_friction)
 
-func _handle_drift() -> void:
-	if _hand_brake: return
-	
+func _handle_drift(delta: float) -> void:
+	if _on_ground(): _has_just_landed_duration += delta 
+	else: _has_just_landed_duration = 0.0
+
 	var grip_speed: float = side_speed_grip * 1.2 if !is_throttling else side_speed_grip
-	if !_is_drifting && (abs(side_speed) > side_speed_drift || !_on_ground()):
+	if (_has_just_landed_duration > 0.0 &&_has_just_landed_duration < 1.0) || _hand_brake:
+		_is_drifting = true
+	elif !_is_drifting && (abs(side_speed) > side_speed_drift || !_on_ground()):
 		_is_drifting = true
 	elif _is_drifting && abs(side_speed) < grip_speed:
 		_is_drifting = false

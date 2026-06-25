@@ -20,10 +20,8 @@ center_of_mass = Vector3(0, -0.5, 0)
 linear_damp = 1.0
 angular_damp = 3.0
 script = ExtResource("1_udt0a")
-cornering_force = 12.0
-max_torque = 90.0
 tilt_ratio = 0.2
-wheels = [NodePath("Wheels/WheelFR"), NodePath("Wheels/WheelFL"), NodePath("Wheels/WheelBR"), NodePath("Wheels/WheelBL")]
+wheels = [NodePath("Wheels/WheelFL"), NodePath("Wheels/WheelFR"), NodePath("Wheels/WheelBL"), NodePath("Wheels/WheelBR")]
 
 [node name="Van" parent="." unique_id=1222573554 instance=ExtResource("1_1nnvc")]
 
@@ -35,25 +33,26 @@ shape = SubResource("ConvexPolygonShape3D_oai6t")
 
 [node name="Wheels" type="Node3D" parent="." unique_id=1710337014]
 
-[node name="WheelFR" parent="Wheels" unique_id=848662349 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
+[node name="WheelFL" parent="Wheels" unique_id=848662349 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47, 0.123, 0.756)
 parent_vehicle = NodePath("../..")
 skid_mark_path_name = "SkidMarks/SkidMarkPath1"
 steering_wheel = true
 
-[node name="WheelFL" parent="Wheels" unique_id=1556392534 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
+[node name="WheelFR" parent="Wheels" unique_id=1556392534 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, 1, -0.47, 0.123, 0.756)
 parent_vehicle = NodePath("../..")
 skid_mark_path_name = "SkidMarks/SkidMarkPath2"
 steering_wheel = true
 
-[node name="WheelBR" parent="Wheels" unique_id=43651871 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
+[node name="WheelBL" parent="Wheels" unique_id=43651871 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47, 0.123, -0.677)
 parent_vehicle = NodePath("../..")
 suspension_force = 170.0
 skid_mark_path_name = "SkidMarks/SkidMarkPath3"
+print = true
 
-[node name="WheelBL" parent="Wheels" unique_id=933371801 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
+[node name="WheelBR" parent="Wheels" unique_id=933371801 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, 1, -0.47, 0.123, -0.677)
 parent_vehicle = NodePath("../..")
 suspension_force = 170.0

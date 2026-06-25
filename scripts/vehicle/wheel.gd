@@ -10,6 +10,7 @@ extends Node3D
 @export var skid_mark_points_count: int = 100
 @export var steering_wheel: bool
 @export var driving_wheel: bool = true
+@export var print: bool 
 
 var skid_mark_started: bool:
 	get: return _skid_mark_started
@@ -27,7 +28,6 @@ var _skid_mark_started: bool
 func _ready() -> void:
 	wheel_boxing = %WheelBoxing
 	wheel_mesh = %WheelMesh
-	# _skid_mark_curve = get_tree().current_scene.get_node(skid_mark_path_name).curve
 	_raycast = %RayCast3D
 	_wheel_radius = wheel_mesh.get_aabb().size.y / 2.0
 	_wheel_distance_to_raycast = _raycast.global_position.distance_to(wheel_mesh.global_position)
@@ -45,7 +45,7 @@ func on_ground() -> bool:
 
 func start_skid_mark() -> void:
 	_skid_mark_started = true
-	_skid_mark_curve = SkidMarksFactory.request_path().curve
+	_skid_mark_curve = SkidMarksFactory.request_path(self).curve
 
 func draw_skid_mark() -> void:
 	if !_skid_mark_started: return
@@ -61,8 +61,6 @@ func draw_skid_mark() -> void:
 		return
 	
 	_skid_mark_curve.add_point(hit_point)
-	# if _skid_mark_curve.point_count > skid_mark_points_count:
-	# 	_skid_mark_curve.remove_point(0)
 	
 func end_skid_mark() -> void:
 	_skid_mark_started = false

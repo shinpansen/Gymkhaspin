@@ -8,6 +8,7 @@ TODO :
 	- Frain à main -> OK
 	- Inputs -> En cours
 	- Vitesses ???
+	- Linear damping pour bloqué la voiture à l'arrêt
 	
 Game design
 	- Temps qui défile

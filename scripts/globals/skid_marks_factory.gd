@@ -10,7 +10,7 @@ var _time_elapsed: float = 0.0
 func _process(delta: float) -> void:
 	# Clear old marks
 	_time_elapsed += delta
-	if _time_elapsed < 0.5: return
+	if _time_elapsed < 1.0: return
 
 	_time_elapsed = 0.0
 	for p: PathPolygon in _marks:
@@ -18,6 +18,7 @@ func _process(delta: float) -> void:
 			p.path.curve.remove_point(0)
 
 	while _marks.size() > PATHS_COUNT_LIMIT:
+		_marks[0].caller.end_skid_mark()
 		_marks[0].path.curve.clear_points()
 		_marks[0].path.queue_free()
 		_marks[0].polygon.queue_free()
@@ -25,7 +26,7 @@ func _process(delta: float) -> void:
 		get_tree().current_scene.remove_child(_marks[0].path)
 		get_tree().current_scene.remove_child(_marks[0].polygon)
 
-func request_path() -> Path3D:
+func request_path(caller: Node3D) -> Path3D:
 	var path := Path3D.new()
 	path.curve = Curve3D.new()
 	get_tree().current_scene.add_child(path)
@@ -44,5 +45,5 @@ func request_path() -> Path3D:
 	csgPoly.material = SKID_MATERIAL
 	get_tree().current_scene.add_child(csgPoly)
 
-	_marks.append(PathPolygon.new(path, csgPoly))
+	_marks.append(PathPolygon.new(path, csgPoly, caller))
 	return path
