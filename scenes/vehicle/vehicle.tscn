@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bgoio1t8ht7nk" path="res://scenes/vehicle/wheel.tscn" id="3_2aj0h"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_j5jx5"]
-friction = 0.1
+friction = 0.0
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_oai6t"]
 points = PackedVector3Array(0.57418764, 0.2677446, -1.1772699, -0.57418764, 0.2677446, -1.1772699, 0.5632839, 0.5788847, -1.1633574, 0.54203856, 0.26273477, 1.0176079, -0.5421509, 0.26273477, 1.0176079, -0.56339633, 0.5788847, -1.1633574, 0, 1.0381942, -1.0913652, 0.47054613, 1.0060098, -1.0913652, 0.47054613, 0.9794426, 0.4114163, 0.53113484, 0.340387, 1.0067871, 0.0014613271, 0.3678651, 1.0679584, 0.0014613271, 0.26273477, 1.0787792, -0.0015737414, 0.26273477, 1.0787792, -0.0015737414, 0.3678651, 1.0679584, -0.5312472, 0.340387, 1.0067871, -0.4706585, 0.9794426, 0.4114163, -0.4706585, 1.0060098, -1.0913652, 0, 1.0238478, 0.4114163)
@@ -16,7 +16,7 @@ mass = 5.0
 physics_material_override = SubResource("PhysicsMaterial_j5jx5")
 gravity_scale = 2.5
 center_of_mass_mode = 1
-center_of_mass = Vector3(0, -0.5, 0)
+center_of_mass = Vector3(0, -0.5, 0.1)
 linear_damp = 1.0
 angular_damp = 3.0
 script = ExtResource("1_udt0a")
@@ -48,14 +48,11 @@ steering_wheel = true
 [node name="WheelBL" parent="Wheels" unique_id=43651871 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47, 0.123, -0.677)
 parent_vehicle = NodePath("../..")
-suspension_force = 170.0
 skid_mark_path_name = "SkidMarks/SkidMarkPath3"
-print = true
 
 [node name="WheelBR" parent="Wheels" unique_id=933371801 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, 1, -0.47, 0.123, -0.677)
 parent_vehicle = NodePath("../..")
-suspension_force = 170.0
 skid_mark_path_name = "SkidMarks/SkidMarkPath4"
 
 [node name="LocalRayCasts" type="Node3D" parent="." unique_id=1771909523]

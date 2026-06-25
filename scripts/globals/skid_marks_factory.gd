@@ -36,6 +36,7 @@ func request_path(caller: Node3D) -> Path3D:
 	csgPoly.path_node = path.get_path()
 	csgPoly.path_interval = 0.5
 	csgPoly.path_rotation = CSGPolygon3D.PATH_ROTATION_PATH_FOLLOW
+	csgPoly.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	csgPoly.polygon = [
 		Vector2(-0.08, -0.02),
 		Vector2(0.08, -0.02),

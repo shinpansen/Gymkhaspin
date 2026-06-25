@@ -3,12 +3,13 @@ TODO :
 	- Roues qui tournent avec la vitesse -> OK
 	- Marques de pneu -> OK
 	- Lumière de freinage -> OK
-	- Fumée ??? (si du temps)
-	- Caméra plus dynamique
 	- Frain à main -> OK
+	- Vitesses -> annulé
+	- Linear damping pour bloqué la voiture à l'arrêt -> OK
+	- Sons moteur !!!
 	- Inputs -> En cours
-	- Vitesses ???
-	- Linear damping pour bloqué la voiture à l'arrêt
+	- Caméra plus dynamique -> annulé
+	- Fumée drift
 	
 Game design
 	- Temps qui défile

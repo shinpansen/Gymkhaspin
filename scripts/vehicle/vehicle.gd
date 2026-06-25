@@ -55,11 +55,12 @@ var _current_suspension_damping: float
 var _previous_speed: float
 var _has_just_landed_duration: float = 0.0
 
-var _gears_ratio: Array[float] = [0.33, 0.66, 1.0]
-var _current_gear: int = 0
+var dist_test: float
 
 func _ready() -> void:
-	max_torque *= _gears_ratio[0]
+	var mesh_test: MeshInstance3D = %MeshInstance3D
+	dist_test = mesh_test.global_position.distance_to(global_position)
+
 	_front_raycast = %FrontRayCast
 	_back_raycast = %BackRayCast
 	_left_raycast = %LeftRayCast
@@ -73,11 +74,12 @@ func _ready() -> void:
 	var brake_light: MeshInstance3D = get_node("Van/Body/Lights_RL")
 	_brake_lights_material = brake_light.get_active_material(1)
 
+var _rot: float = 270.0
 func _process(delta: float) -> void:
 	_handle_inputs(delta)
 	_handle_damping(delta)
 	_calculate_floor_normal()
-	_handle_acceleration()
+	_handle_acceleration(delta)
 	_handle_cornering()
 	_add_side_friction_force(delta)
 	_handle_drift(delta)
@@ -86,14 +88,21 @@ func _process(delta: float) -> void:
 	_draw_skid_marks()
 
 	########### DEBUG ##############
-	%LabelSpeed.text = str(round(speed * 6.0), 0) + " km/h"
-	%LabelSpeed.text += "\n" + str(round(_current_torque), 1) + " nm"
+	%LabelSpeed.text = str(round(speed * 6.0)) + " km/h"
+	%LabelSpeed.text += "\n" + str(round(_current_torque)) + " nm"
+
+	var mesh_test: MeshInstance3D = %MeshInstance3D
+	var target_rot: float = 270 - rotation_degrees.y - side_speed * 2.0
+	_rot = lerp_angle(_rot, target_rot, delta * 20.0) 
+	var pos: Vector3 = MathUtils.get_position_on_circle(global_position, dist_test, _rot)
+	pos.y += 1.7
+	mesh_test.global_position = pos
+
 
 func _physics_process(delta: float) -> void:
 	var forward_speed: float = speed
 	_current_acceleration = (forward_speed - _previous_speed) / delta
 	_previous_speed = forward_speed
-
 
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	if _current_suspension_damping == 0.0: return
@@ -126,9 +135,13 @@ func _handle_damping(delta) -> void:
 	else:
 		_current_suspension_damping = lerpf(_current_suspension_damping, 0.0, delta * 10.0)
 
-func _handle_acceleration() -> void:
-	linear_damp = linear_damping if _on_ground() else 0.0
+func _handle_acceleration(delta: float) -> void:
 	apply_central_force(forward_vector.normalized() * _current_torque)
+
+	if _on_ground() && !is_throttling && !is_braking && speed < 0.5:
+		linear_damp = lerpf(linear_damp, 30.0, delta * 2.0)
+	else:
+		linear_damp = linear_damping if _on_ground() else 0.0
 
 func _handle_cornering() -> void:
 	var force: float = cornering_force
@@ -149,7 +162,7 @@ func _add_side_friction_force(delta: float) -> void:
 			if !_is_drifting
 			else friction_force * (8.0 - speed) / 10.0
 		)
-	_current_friction = lerpf(_current_friction, friction_target, delta * 10.0)
+	_current_friction = lerpf(_current_friction, friction_target, delta * 5.0)
 	apply_central_force(_get_side_vector() * -side_speed * mass * _current_friction)
 
 func _handle_drift(delta: float) -> void:
@@ -169,7 +182,7 @@ func _apply_tilt_tweak() -> void:
 	var drift_direction: float = sign(side_speed)
 	var tilt_x: float = drift_direction if _is_drifting else -input_direction.x
 
-	center_of_mass = Vector3(tilt_x * tilt / 2.0, center_of_mass.y, -_acceleration_sign * tilt)
+	center_of_mass = Vector3(tilt_x * tilt / 2.0, center_of_mass.y, -_acceleration_sign * tilt + 0.1)
 
 func _apply_visual_tweaks(delta: float) -> void:
 	# Wheels rotation

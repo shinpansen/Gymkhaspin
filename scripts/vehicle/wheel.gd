@@ -10,7 +10,6 @@ extends Node3D
 @export var skid_mark_points_count: int = 100
 @export var steering_wheel: bool
 @export var driving_wheel: bool = true
-@export var print: bool 
 
 var skid_mark_started: bool:
 	get: return _skid_mark_started
@@ -37,7 +36,7 @@ func _process(delta: float) -> void:
 
 	if on_ground(): _apply_suspension_force(delta)
 	_update_wheel_offset(delta)
-	
+
 func on_ground() -> bool:
 	if !_raycast.is_colliding(): return false
 	elif _get_suspension_distance_to_collision() > suspension_length: return false
