@@ -34,12 +34,18 @@ var input_direction: Vector2:
 var is_throttling: bool:
 	get: return Input.is_action_pressed("cmd_throttle", 0.2)
 	set(_value): assert(false, "is_braking is read-only")
+var is_on_ground: bool:
+	get: return _on_ground()
+	set(_value): assert(false, "is_on_ground is read-only")
 var is_braking: bool:
 	get: return Input.is_action_pressed("cmd_brake", 0.2) && signed_speed < -1 || Input.is_action_pressed("cmd_throttle", 0.2) && signed_speed > 1
 	set(_value): assert(false, "is_braking is read-only")
 var is_drifting: bool:
 	get: return _is_drifting
 	set(_value): assert(false, "is_drifting is read-only")
+var is_drawing_skid_marks: bool:
+	get: return _is_drawing_skid_marks
+	set(_value): assert(false, "is_drawing_skid_marks is read-only")
 
 var _front_raycast: RayCast3D
 var _back_raycast: RayCast3D
@@ -57,6 +63,7 @@ var _current_acceleration: float
 var _current_suspension_damping: float
 var _previous_speed: float
 var _has_just_landed_duration: float = 0.0
+var _is_drawing_skid_marks: bool
 
 func _ready() -> void:
 	_front_raycast = %FrontRayCast
@@ -209,8 +216,10 @@ func _draw_skid_marks() -> void:
 		if must_draw || (current_acceleration > 10 && !w.steering_wheel):
 			if !w.skid_mark_started: w.start_skid_mark()
 			w.draw_skid_mark()
+			_is_drawing_skid_marks = true
 		else:
 			w.end_skid_mark()
+			_is_drawing_skid_marks = false
 
 func _get_forward_vector() -> Vector3:
 	if !_front_raycast.is_colliding() && !_back_raycast.is_colliding():

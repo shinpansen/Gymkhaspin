@@ -1,6 +1,8 @@
 extends Node3D
 
 @export var score_target: int
+@export var score_stream: AudioStreamPlayer
+@export var score_volume: float = 0.9
 
 const score_base: float = 10.0
 const speed_multiplicator: float = 1.5
@@ -26,6 +28,8 @@ func _process(delta: float) -> void:
 		%CircleIndicator2.visible = false
 	
 func _increase_score(delta: float) -> void:
+	var previous_score: float = _score
+	
 	var vehicle_distance: float = _vehicle.global_position.distance_to(global_position)
 	var bonus_distance_ratio: float = 1.0 - (vehicle_distance / _max_distance)
 	var bonus: float = score_base
@@ -33,6 +37,11 @@ func _increase_score(delta: float) -> void:
 	bonus *= 1.0 + _vehicle.speed / 25.0
 	_score += bonus * delta
 	if _score > score_target: _score = score_target
+
+	# Sound
+	if int(previous_score) % 2 != 0 && int(_score) % 2 == 0:
+		score_stream.volume_db = SoundsUtils.get_volume_db(score_volume)
+		score_stream.play()
 
 func _can_score() -> bool:
 	return (

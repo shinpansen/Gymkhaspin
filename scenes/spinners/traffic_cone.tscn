@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://cyo0nihujnypy" path="res://scripts/spinner.gd" id="1_btiyl"]
 [ext_resource type="PackedScene" uid="uid://tfmquvbr086q" path="res://assets/models/circle.glb" id="2_pk5ce"]
 [ext_resource type="Material" uid="uid://bg813yg14enj5" path="res://assets/materials/white_emissive.tres" id="3_xsu52"]
+[ext_resource type="AudioStream" uid="uid://cschn4xfh3vs5" path="res://assets/sounds/click_8bits.wav" id="5_oossv"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wccwa"]
 radius = 0.54003906
@@ -19,9 +20,10 @@ emission_energy_multiplier = 4.0
 height = 5.737793
 radius = 6.380371
 
-[node name="TrafficCone" type="Node3D" unique_id=850214933]
+[node name="TrafficCone" type="Node3D" unique_id=850214933 node_paths=PackedStringArray("score_stream")]
 script = ExtResource("1_btiyl")
 score_target = 100
+score_stream = NodePath("ScoreStreamPlayer")
 
 [node name="MeshA" parent="." unique_id=845373845 instance=ExtResource("1_1w5ai")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.043087542, 0.2369613, -0.4529214)
@@ -68,6 +70,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3987651, 0)
 pixel_size = 0.015
 billboard = 1
 text = "TEST"
+
+[node name="ScoreStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1934698443]
+stream = ExtResource("5_oossv")
 
 [connection signal="body_shape_entered" from="ScoreArea" to="." method="_on_score_area_body_shape_entered"]
 [connection signal="body_shape_exited" from="ScoreArea" to="." method="_on_score_area_body_shape_exited"]

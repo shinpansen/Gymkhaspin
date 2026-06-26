@@ -41,3 +41,7 @@ Environnement :
 	- Barrière tout autour de la map en cercle
 	- Sapins partout à l'extérieur
 	- Pont suspendu au dessus
+
+Credits : 
+	https://sfxr.me/
+	https://lynocs.itch.io/texture-pack

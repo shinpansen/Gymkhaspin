@@ -3,6 +3,9 @@
 [ext_resource type="PackedScene" uid="uid://chd2vrefxkh3k" path="res://assets/models/Van.glb" id="1_1nnvc"]
 [ext_resource type="Script" uid="uid://dk2uf3vhv3qji" path="res://scripts/vehicle/vehicle.gd" id="1_udt0a"]
 [ext_resource type="PackedScene" uid="uid://bgoio1t8ht7nk" path="res://scenes/vehicle/wheel.tscn" id="3_2aj0h"]
+[ext_resource type="Script" uid="uid://dtkd2co8wm7ub" path="res://scripts/vehicle/vehicle_sounds.gd" id="4_015gl"]
+[ext_resource type="AudioStream" uid="uid://dl5xh3tr58wwb" path="res://assets/sounds/drift_8bit.wav" id="5_015gl"]
+[ext_resource type="AudioStream" uid="uid://b3wscxrlciyg8" path="res://assets/sounds/engine_8bits.wav" id="6_3wsv0"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_j5jx5"]
 friction = 0.0
@@ -72,5 +75,22 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.3, 0)
 [node name="RightRayCast" type="RayCast3D" parent="LocalRayCasts" unique_id=1983004075]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.3, 0)
+
+[node name="Sound" type="Node" parent="." unique_id=215397388]
+
+[node name="VehicleSounds" type="Node" parent="Sound" unique_id=191664529 node_paths=PackedStringArray("vehicle_source", "drif_stream", "engine_stream")]
+script = ExtResource("4_015gl")
+vehicle_source = NodePath("../..")
+drif_stream = NodePath("../DriftStreamPlayer")
+engine_stream = NodePath("../EngineStreamPlayer")
+drift_volume = 0.75
+engine_volume = 0.8
+
+[node name="DriftStreamPlayer" type="AudioStreamPlayer" parent="Sound" unique_id=1584159309]
+stream = ExtResource("5_015gl")
+volume_db = -80.0
+
+[node name="EngineStreamPlayer" type="AudioStreamPlayer" parent="Sound" unique_id=654067001]
+stream = ExtResource("6_3wsv0")
 
 [editable path="Van"]
