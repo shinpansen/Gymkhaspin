@@ -1,6 +1,6 @@
 extends Node 
 
-const POINTS_COUNT_LIMIT: int = 150
+const POINTS_COUNT_LIMIT: int = 100
 const PATHS_COUNT_LIMIT: int = 20
 const SKID_MATERIAL = preload("res://assets/materials/skid_mark.tres")
 
@@ -10,7 +10,7 @@ var _time_elapsed: float = 0.0
 func _process(delta: float) -> void:
 	# Clear old marks
 	_time_elapsed += delta
-	if _time_elapsed < 1.0: return
+	if _time_elapsed < 0.5: return
 
 	_time_elapsed = 0.0
 	for p: PathPolygon in _marks:

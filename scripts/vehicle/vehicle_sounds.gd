@@ -16,6 +16,7 @@ func _process(delta: float) -> void:
     _play_drift_sound(delta)
 
 func _play_engine_sound(delta) -> void:
+    print(engine_stream.pitch_scale)
     var speed_base: float = vehicle_source.speed if vehicle_source.is_on_ground else 23.0
     if vehicle_source.is_drifting: speed_base *= 1.5
     var pitch: float = (0.25 + (speed_base + 0.1) / 25.0) * 3.0
@@ -26,7 +27,7 @@ func _play_engine_sound(delta) -> void:
 func _play_drift_sound(delta: float) -> void:
     if vehicle_source.is_drawing_skid_marks:
         start_drift_sound(drif_stream, delta)
-        var pitch: float = (0.5 + vehicle_source.speed / 25.0)
+        var pitch: float = (0.5 + vehicle_source.speed / 25.0) * 1.5
         drif_stream.pitch_scale = lerpf(drif_stream.pitch_scale, pitch, delta * 10.0)
     else:
         stop_drift_sound(drif_stream, delta)

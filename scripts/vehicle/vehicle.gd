@@ -12,6 +12,7 @@ extends RigidBody3D
 @export var suspension_damping: float = 8.0
 @export var tilt_ratio: float = 0.3
 @export var wheels: Array[Wheel] = []
+@export var gears: Array[float] = []
 
 var speed : float:
 	get: return abs(signed_speed)
@@ -25,6 +26,9 @@ var side_speed: float:
 var current_acceleration: float:
 	get: return _current_acceleration
 	set(_value): assert(false, "current_acceleration is read-only")
+var current_gear: String:
+	get: return "N" if (!_on_ground() || speed < 0.5) else ("R" if _current_gear < 0 else str(_current_gear + 1))
+	set(_value): assert(false, "current_gear is read-only")
 var forward_vector: Vector3:
 	get: return _get_forward_vector()
 	set(_value): assert(false, "forward_vector is read-only")
@@ -59,6 +63,7 @@ var _acceleration_sign: float
 var _current_friction: float
 var _is_drifting: bool
 var _hand_brake: bool
+var _current_gear: int
 var _current_acceleration: float
 var _current_suspension_damping: float
 var _previous_speed: float
@@ -79,7 +84,6 @@ func _ready() -> void:
 	var brake_light: MeshInstance3D = get_node("Van/Body/Lights_RL")
 	_brake_lights_material = brake_light.get_active_material(1)
 
-var _rot: float = 270.0
 func _process(delta: float) -> void:
 	_handle_inputs(delta)
 	_handle_damping(delta)
@@ -91,10 +95,12 @@ func _process(delta: float) -> void:
 	_apply_tilt_tweak()
 	_apply_visual_tweaks(delta)
 	_draw_skid_marks()
+	_handle_fake_gears()
 
 	########### DEBUG ##############
 	%LabelSpeed.text = str(round(speed * 6.0)) + " km/h"
 	%LabelSpeed.text += "\n" + str(round(_current_torque)) + " nm"
+	%LabelSpeed.text += "\n" + "Gear " + current_gear
 
 func _physics_process(delta: float) -> void:
 	var forward_speed: float = speed
@@ -220,6 +226,12 @@ func _draw_skid_marks() -> void:
 		else:
 			w.end_skid_mark()
 			_is_drawing_skid_marks = false
+
+func _handle_fake_gears() -> void:
+	_current_gear = 0 if signed_speed <= 0 else -1
+	for i in range(gears.size()):
+		if -signed_speed > gears[i]:
+			_current_gear = i + 1
 
 func _get_forward_vector() -> Vector3:
 	if !_front_raycast.is_colliding() && !_back_raycast.is_colliding():

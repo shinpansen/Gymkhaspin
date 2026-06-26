@@ -6,7 +6,7 @@ extends Node3D
 @export var suspension_force: float = 150.0
 @export var wheel_min_offset_y: float = -0.2
 @export var skid_mark_path_name: String
-@export var skid_mark_points_gap: float = 0.2
+@export var skid_mark_points_gap: float = 0.3
 @export var skid_mark_points_count: int = 100
 @export var steering_wheel: bool
 @export var driving_wheel: bool = true
