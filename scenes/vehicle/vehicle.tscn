@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bgoio1t8ht7nk" path="res://scenes/vehicle/wheel.tscn" id="3_2aj0h"]
 [ext_resource type="Script" uid="uid://dtkd2co8wm7ub" path="res://scripts/vehicle/vehicle_sounds.gd" id="4_015gl"]
 [ext_resource type="AudioStream" uid="uid://yggi1lfl0ckr" path="res://assets/sounds/drift_b_8bits.wav" id="5_3wsv0"]
-[ext_resource type="AudioStream" uid="uid://b3wscxrlciyg8" path="res://assets/sounds/engine_8bits.wav" id="6_3wsv0"]
+[ext_resource type="AudioStream" uid="uid://qx2uloei70gm" path="res://assets/sounds/chevy_engine.wav" id="6_3wsv0"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_j5jx5"]
 friction = 0.0
@@ -90,8 +90,10 @@ engine_volume = 0.95
 [node name="DriftStreamPlayer" type="AudioStreamPlayer" parent="Sound" unique_id=1584159309]
 stream = ExtResource("5_3wsv0")
 volume_db = -80.0
+max_polyphony = 2
 
 [node name="EngineStreamPlayer" type="AudioStreamPlayer" parent="Sound" unique_id=654067001]
 stream = ExtResource("6_3wsv0")
+max_polyphony = 2
 
 [editable path="Van"]

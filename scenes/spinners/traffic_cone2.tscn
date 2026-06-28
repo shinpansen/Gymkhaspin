@@ -1,0 +1,75 @@
+[gd_scene format=3 uid="uid://dagdmgm440v42"]
+
+[ext_resource type="Script" uid="uid://cyo0nihujnypy" path="res://scripts/spinner.gd" id="1_s8f12"]
+[ext_resource type="PackedScene" uid="uid://c7jn2cly5kg8i" path="res://assets/models/traffic_cone.glb" id="2_wuxyh"]
+[ext_resource type="PackedScene" uid="uid://tfmquvbr086q" path="res://assets/models/circle.glb" id="3_dex1a"]
+[ext_resource type="Material" uid="uid://bg813yg14enj5" path="res://assets/materials/white_emissive.tres" id="4_qiu2x"]
+[ext_resource type="AudioStream" uid="uid://cschn4xfh3vs5" path="res://assets/sounds/click_8bits.wav" id="5_dfp3s"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wccwa"]
+radius = 0.54003906
+height = 1.5219727
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_btiyl"]
+albedo_color = Color(0, 0.560863, 0.18948817, 1)
+emission_enabled = true
+emission = Color(0, 0.560863, 0.18948817, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_wccwa"]
+height = 5.737793
+radius = 10.583496
+
+[node name="TrafficCone" type="Node3D" unique_id=850214933 node_paths=PackedStringArray("score_stream")]
+script = ExtResource("1_s8f12")
+score_target = 250
+score_stream = NodePath("ScoreStreamPlayer")
+
+[node name="MeshA" parent="." unique_id=845373845 instance=ExtResource("2_wuxyh")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.015211761, 0.9490065, 0.012106419)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=515997471]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2369613, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1259695180]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.025275946, -0.23901367, 0)
+shape = SubResource("CapsuleShape3D_wccwa")
+
+[node name="CircleIndicator" parent="." unique_id=1222285700 instance=ExtResource("3_dex1a")]
+unique_name_in_owner = true
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)
+
+[node name="Circle" parent="CircleIndicator" index="0" unique_id=1797216960]
+surface_material_override/0 = ExtResource("4_qiu2x")
+
+[node name="CircleIndicator2" parent="." unique_id=137375036 instance=ExtResource("3_dex1a")]
+unique_name_in_owner = true
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)
+visible = false
+
+[node name="Circle" parent="CircleIndicator2" index="0" unique_id=1797216960]
+surface_material_override/0 = SubResource("StandardMaterial3D_btiyl")
+
+[node name="ScoreArea" type="Area3D" parent="." unique_id=379687865]
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ScoreArea" unique_id=1854712938]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8688965, 0)
+shape = SubResource("CylinderShape3D_wccwa")
+
+[node name="ScoreLabel" type="Label3D" parent="." unique_id=1383743527]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5417295, 0)
+pixel_size = 0.015
+billboard = 1
+text = "TEST"
+
+[node name="ScoreStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1934698443]
+stream = ExtResource("5_dfp3s")
+
+[connection signal="body_shape_entered" from="ScoreArea" to="." method="_on_score_area_body_shape_entered"]
+[connection signal="body_shape_exited" from="ScoreArea" to="." method="_on_score_area_body_shape_exited"]
+
+[editable path="CircleIndicator"]
+[editable path="CircleIndicator2"]

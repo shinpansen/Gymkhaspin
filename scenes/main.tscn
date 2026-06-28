@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://b4xylhi0vnorx" path="res://scenes/vehicle/vehicle.tscn" id="4_o6xl0"]
 [ext_resource type="Texture2D" uid="uid://1twkahviwh0w" path="res://assets/textures/6_normal.bmp" id="4_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://p2mwmq62svfp" path="res://scenes/spinners/traffic_cone.tscn" id="7_o6xl0"]
+[ext_resource type="PackedScene" uid="uid://dagdmgm440v42" path="res://scenes/spinners/traffic_cone2.tscn" id="8_tipki"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_74lek"]
 shader = ExtResource("1_jyhfs")
@@ -49,11 +50,23 @@ size = Vector3(1000, 0.2, 1000)
 [sub_resource type="LabelSettings" id="LabelSettings_74lek"]
 font_size = 42
 
-[sub_resource type="BoxMesh" id="BoxMesh_xc1so"]
-size = Vector3(1, 6.8553467, 24.605835)
+[sub_resource type="BoxMesh" id="BoxMesh_wccwa"]
+size = Vector3(20, 20, 20)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_74lek"]
-size = Vector3(1, 6.8553467, 24.605835)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xc1so"]
+albedo_color = Color(0.724318, 0.4530223, 0.08147479, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o6xl0"]
+size = Vector3(20, 20, 20)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tipki"]
+size = Vector3(50, 20, 80)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_85g3d"]
+albedo_color = Color(0.97996265, 0, 0.085498326, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tipki"]
+size = Vector3(50, 20, 80)
 
 [node name="Main" type="Node3D" unique_id=2053984469]
 
@@ -101,38 +114,34 @@ offset_bottom = 135.0
 text = "Speed"
 label_settings = SubResource("LabelSettings_74lek")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1700286750]
-transform = Transform3D(0.3666679, -0.9303519, 0, 0.91610146, 0.36105156, 0.17435552, -0.162212, -0.06393057, 0.98468274, 0, -9.696171, 0)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=1692592674]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
-mesh = SubResource("BoxMesh_xc1so")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=846442473]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
-shape = SubResource("BoxShape3D_74lek")
-
-[node name="StaticBody3D2" type="StaticBody3D" parent="." unique_id=1381942049]
-transform = Transform3D(-4.371138e-08, -0.99999994, 0, 0.99999994, -4.371139e-08, 0, 0, 0, 0.9999999, 16.767914, -2.0759993, 0)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2" unique_id=481470903]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
-mesh = SubResource("BoxMesh_xc1so")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2" unique_id=666722984]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
-shape = SubResource("BoxShape3D_74lek")
-
-[node name="StaticBody3D3" type="StaticBody3D" parent="." unique_id=992739203]
-transform = Transform3D(0.0026957763, -0.99999607, 0.0007403143, 0.9529152, 0.0027933384, 0.3032239, -0.30322483, -0.00011196719, 0.952919, 16.768, -8.545, -21.09)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D3" unique_id=518131465]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
-mesh = SubResource("BoxMesh_xc1so")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3" unique_id=1195474320]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5678263, 2.9276733, 10.225188)
-shape = SubResource("BoxShape3D_74lek")
-
 [node name="TrafficCone" parent="." unique_id=850214933 instance=ExtResource("7_o6xl0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.97462, 0.09652233, 6.3738074)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.268737, 0.09652233, 17.59791)
+
+[node name="TrafficCone2" parent="." unique_id=966852617 instance=ExtResource("7_o6xl0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62.78437, 4.3350954, 19.644184)
+
+[node name="TrafficCone3" parent="." unique_id=1106964655 instance=ExtResource("8_tipki")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46.27011, 4.3660107, 49.670525)
+
+[node name="TrafficCone4" parent="." unique_id=996714579 instance=ExtResource("7_o6xl0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 65.79177, 4.3350954, 72.54843)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=907557326]
+transform = Transform3D(0.9552258, -0.29587772, 0, 0.29587772, 0.9552258, 0, 0, 0, 1, 15.827629, -6.797695, 23.284729)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=813507823]
+mesh = SubResource("BoxMesh_wccwa")
+surface_material_override/0 = SubResource("StandardMaterial3D_xc1so")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=44799872]
+shape = SubResource("BoxShape3D_o6xl0")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="." unique_id=239955007]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52.757774, -5.6799564, 46.09247)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2" unique_id=1433107859]
+mesh = SubResource("BoxMesh_tipki")
+surface_material_override/0 = SubResource("StandardMaterial3D_85g3d")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2" unique_id=1216488160]
+shape = SubResource("BoxShape3D_tipki")

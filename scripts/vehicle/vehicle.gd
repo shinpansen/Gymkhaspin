@@ -29,6 +29,9 @@ var current_acceleration: float:
 var current_gear: String:
 	get: return "N" if (!_on_ground() || speed < 0.5) else ("R" if _current_gear < 0 else str(_current_gear + 1))
 	set(_value): assert(false, "current_gear is read-only")
+var rpm: float:
+	get: return _rpm
+	set(_value): assert(false, "rpm is read-only")
 var forward_vector: Vector3:
 	get: return _get_forward_vector()
 	set(_value): assert(false, "forward_vector is read-only")
@@ -64,6 +67,7 @@ var _current_friction: float
 var _is_drifting: bool
 var _hand_brake: bool
 var _current_gear: int
+var _rpm: float
 var _current_acceleration: float
 var _current_suspension_damping: float
 var _previous_speed: float
@@ -95,11 +99,12 @@ func _process(delta: float) -> void:
 	_apply_tilt_tweak()
 	_apply_visual_tweaks(delta)
 	_draw_skid_marks()
-	_handle_fake_gears()
+	_compute_fake_gears_and_rpm(delta)
 
 	########### DEBUG ##############
 	%LabelSpeed.text = str(round(speed * 6.0)) + " km/h"
 	%LabelSpeed.text += "\n" + str(round(_current_torque)) + " nm"
+	%LabelSpeed.text += "\n" + str(int(rpm)) + " rpm"
 	%LabelSpeed.text += "\n" + "Gear " + current_gear
 
 func _physics_process(delta: float) -> void:
@@ -227,11 +232,16 @@ func _draw_skid_marks() -> void:
 			w.end_skid_mark()
 			_is_drawing_skid_marks = false
 
-func _handle_fake_gears() -> void:
+func _compute_fake_gears_and_rpm(delta: float) -> void:
 	_current_gear = 0 if signed_speed <= 0 else -1
 	for i in range(gears.size()):
 		if -signed_speed > gears[i]:
 			_current_gear = i + 1
+
+	var rpm_target: float = round(speed * 150.0)
+	if _is_drifting: rpm_target *= 1.33
+	rpm_target += 800.0 # Idle rpm
+	_rpm = lerpf(_rpm, rpm_target, delta * 10.0)
 
 func _get_forward_vector() -> Vector3:
 	if !_front_raycast.is_colliding() && !_back_raycast.is_colliding():
