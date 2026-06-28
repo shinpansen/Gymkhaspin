@@ -52,12 +52,12 @@ func _can_score() -> bool:
 	)
 
 func _on_score_area_body_shape_entered(body_rid: RID, body: Node3D, body_shape_index: int, local_shape_index: int) -> void:
-	if !(body is Vehicle): return
+	if body == null || !(body is Vehicle): return
 	_max_distance = body.global_position.distance_to(global_position)
 	_vehicle = body as Vehicle
 	_in_area = true
 
 func _on_score_area_body_shape_exited(body_rid: RID, body: Node3D, body_shape_index: int, local_shape_index: int) -> void:
-	if !(body is Vehicle): return
+	if body == null || !(body is Vehicle): return
 	_vehicle = null
 	_in_area = false

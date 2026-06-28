@@ -13,6 +13,10 @@ extends RigidBody3D
 @export var tilt_ratio: float = 0.3
 @export var wheels: Array[Wheel] = []
 @export var gears: Array[float] = []
+@export var idle_rpm: float = 713.0
+@export var rpm_multiplier: float = 160.0
+@export var drift_rpm_multiplier: float = 1.33
+@export var max_rpm: float = 6100.0
 
 var speed : float:
 	get: return abs(signed_speed)
@@ -238,10 +242,11 @@ func _compute_fake_gears_and_rpm(delta: float) -> void:
 		if -signed_speed > gears[i]:
 			_current_gear = i + 1
 
-	var rpm_target: float = round(speed * 150.0)
-	if _is_drifting: rpm_target *= 1.33
-	rpm_target += 800.0 # Idle rpm
-	_rpm = lerpf(_rpm, rpm_target, delta * 10.0)
+	var rpm_target: float = round(speed * rpm_multiplier)
+	if _is_drifting: rpm_target *= drift_rpm_multiplier
+	elif !is_on_ground: rpm_target = max_rpm
+	rpm_target += idle_rpm
+	_rpm = lerpf(_rpm, rpm_target, delta * 20.0)
 
 func _get_forward_vector() -> Vector3:
 	if !_front_raycast.is_colliding() && !_back_raycast.is_colliding():
