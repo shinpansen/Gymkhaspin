@@ -15,6 +15,10 @@ run/main_scene="uid://dvxex3qbkk2i0"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[audio]
+
+buses/default_bus_layout="uid://b4c7v8lh0i22j"
+
 [autoload]
 
 SkidMarksFactory="*uid://c04343lklhxoj"

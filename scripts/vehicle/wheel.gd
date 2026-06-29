@@ -10,6 +10,7 @@ extends Node3D
 @export var skid_mark_points_count: int = 100
 @export var steering_wheel: bool
 @export var driving_wheel: bool = true
+@export var location: CarEnums.WheelLocation
 
 var skid_mark_started: bool:
 	get: return _skid_mark_started

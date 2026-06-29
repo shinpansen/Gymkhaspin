@@ -93,7 +93,7 @@ metadata/_custom_type_script = "uid://ps2l4sg8h37e"
 [node name="Floor" type="StaticBody3D" parent="." unique_id=1888477577]
 
 [node name="Mesh" type="MeshInstance3D" parent="Floor" unique_id=401234620]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09448845, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.016616344, 0.08841974, 0.012855053)
 mesh = SubResource("PlaneMesh_j5jx5")
 surface_material_override/0 = SubResource("StandardMaterial3D_lpvoh")
 

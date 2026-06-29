@@ -16,7 +16,7 @@
 [ext_resource type="AudioStream" uid="uid://bft4yv55x2n2x" path="res://assets/sounds/engine/engine_4500rpm.wav" id="14_28c2v"]
 [ext_resource type="AudioStream" uid="uid://gr5hwywpd4fo" path="res://assets/sounds/engine/engine_5000rpm.wav" id="15_at4gg"]
 [ext_resource type="AudioStream" uid="uid://binlv2kdrqb02" path="res://assets/sounds/engine/engine_5500rpm.wav" id="16_53pim"]
-[ext_resource type="AudioStream" uid="uid://b14wwbqa20uqq" path="res://assets/sounds/engine/engine_6000rpm.wav" id="17_x0a3v"]
+[ext_resource type="AudioStream" uid="uid://sxhnkvxkcr8o" path="res://assets/sounds/engine/engine_6000rpm.wav" id="17_x0a3v"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_j5jx5"]
 friction = 0.0
@@ -36,11 +36,11 @@ angular_damp = 3.0
 script = ExtResource("1_udt0a")
 tilt_ratio = 0.2
 wheels = [NodePath("Wheels/WheelFL"), NodePath("Wheels/WheelFR"), NodePath("Wheels/WheelBL"), NodePath("Wheels/WheelBR")]
-gears = Array[float]([6.0, 14.0, 20.0])
+gears = Array[float]([8.0, 17.0, 25.0])
 
 [node name="Van" parent="." unique_id=1222573554 instance=ExtResource("1_1nnvc")]
 
-[node name="CollisionShape3D" parent="Van/Cube" parent_id_path=PackedInt32Array(1222573554, 1236912035) index="0" unique_id=2005483167]
+[node name="CollisionShape3D" parent="Van/Cube" parent_id_path=PackedInt32Array(1222573554, 357751293) index="0" unique_id=827891158]
 disabled = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1915448020]
@@ -53,22 +53,26 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47, 0.123, 0.756)
 parent_vehicle = NodePath("../..")
 skid_mark_path_name = "SkidMarks/SkidMarkPath1"
 steering_wheel = true
+location = 1
 
 [node name="WheelFR" parent="Wheels" unique_id=1556392534 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, 1, -0.47, 0.123, 0.756)
 parent_vehicle = NodePath("../..")
 skid_mark_path_name = "SkidMarks/SkidMarkPath2"
 steering_wheel = true
+location = 2
 
 [node name="WheelBL" parent="Wheels" unique_id=43651871 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47, 0.123, -0.677)
 parent_vehicle = NodePath("../..")
 skid_mark_path_name = "SkidMarks/SkidMarkPath3"
+location = 3
 
 [node name="WheelBR" parent="Wheels" unique_id=933371801 node_paths=PackedStringArray("parent_vehicle") instance=ExtResource("3_2aj0h")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, 1, -0.47, 0.123, -0.677)
 parent_vehicle = NodePath("../..")
 skid_mark_path_name = "SkidMarks/SkidMarkPath4"
+location = 4
 
 [node name="LocalRayCasts" type="Node3D" parent="." unique_id=1771909523]
 
@@ -107,7 +111,6 @@ engine_sounds = Dictionary[int, AudioStream]({
 5500: ExtResource("16_53pim"),
 6000: ExtResource("17_x0a3v")
 })
-engine_volume = 0.95
 drif_stream = NodePath("../DriftStreamPlayer")
 drift_volume = 0.7
 

@@ -3,7 +3,7 @@ extends RigidBody3D
 
 @export var cornering_force: float = 12.0
 @export var max_torque: float = 90.0
-@export var acceleration_force: float = 5.0
+@export var acceleration_force: float = 2.0
 @export var deceleration_force: float = 2.0
 @export var friction_force: float = 6.0
 @export var side_speed_drift: float = 5.0
@@ -15,8 +15,8 @@ extends RigidBody3D
 @export var gears: Array[float] = []
 @export var idle_rpm: float = 713.0
 @export var rpm_multiplier: float = 160.0
-@export var drift_rpm_multiplier: float = 1.33
-@export var max_rpm: float = 6300.0
+@export var drift_rpm_multiplier: float = 1.25
+@export var max_rpm: float = 6100.0
 
 var speed : float:
 	get: return abs(signed_speed)
@@ -31,11 +31,17 @@ var current_acceleration: float:
 	get: return _current_acceleration
 	set(_value): assert(false, "current_acceleration is read-only")
 var current_gear: String:
-	get: return "N" if (!_on_ground() || speed < 0.5) else ("R" if _current_gear < 0 else str(_current_gear + 1))
+	get: return "N" if (!_on_ground() || speed < 0.5 || _rev_test) else ("R" if _current_gear < 0 else str(_current_gear + 1))
 	set(_value): assert(false, "current_gear is read-only")
 var rpm: float:
 	get: return _rpm
 	set(_value): assert(false, "rpm is read-only")
+var is_idle_reving: bool:
+	get: return _rev_test && speed < 2.0
+	set(_value): assert(false, "is_idle_reving is read-only")
+var is_burning: bool:
+	get: return int(_rev_burn_time) > 0
+	set(_value): assert(false, "is_burning is read-only")
 var forward_vector: Vector3:
 	get: return _get_forward_vector()
 	set(_value): assert(false, "forward_vector is read-only")
@@ -49,7 +55,7 @@ var is_on_ground: bool:
 	get: return _on_ground()
 	set(_value): assert(false, "is_on_ground is read-only")
 var is_braking: bool:
-	get: return Input.is_action_pressed("cmd_brake", 0.2) && signed_speed < -1 || Input.is_action_pressed("cmd_throttle", 0.2) && signed_speed > 1
+	get: return Input.is_action_pressed("cmd_brake", 0.2) && signed_speed < 1 && _acceleration_sign == -1.0
 	set(_value): assert(false, "is_braking is read-only")
 var is_drifting: bool:
 	get: return _is_drifting
@@ -72,11 +78,14 @@ var _is_drifting: bool
 var _hand_brake: bool
 var _current_gear: int
 var _rpm: float
+var _rev_test: bool
+var _rev_burn_time: float
 var _current_acceleration: float
 var _current_suspension_damping: float
 var _previous_speed: float
 var _has_just_landed_duration: float = 0.0
 var _is_drawing_skid_marks: bool
+var _in_the_air_time: float = 0.0
 
 func _ready() -> void:
 	_front_raycast = %FrontRayCast
@@ -110,6 +119,8 @@ func _process(delta: float) -> void:
 	%LabelSpeed.text += "\n" + str(round(_current_torque)) + " nm"
 	%LabelSpeed.text += "\n" + str(int(rpm)) + " rpm"
 	%LabelSpeed.text += "\n" + "Gear " + current_gear
+	%LabelSpeed.text += "\n" + "_rev_burn_time " + str(_rev_burn_time)
+	%LabelSpeed.text += "\n" + "is_drifting " + str(is_drifting)
 
 func _physics_process(delta: float) -> void:
 	var forward_speed: float = speed
@@ -126,13 +137,17 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 
 func _handle_inputs(delta: float) -> void:
 	# Torque
+	_rev_test = Input.is_action_pressed("cmd_throttle") && Input.is_action_pressed("cmd_brake")
 	_acceleration_sign = (
-		1.0 if Input.is_action_pressed("cmd_throttle")
+		0.0 if _rev_test
 		else -1.0 if Input.is_action_pressed("cmd_brake")
+		else 1.0 if Input.is_action_pressed("cmd_throttle")
 		else 0.0
 	)
 	var weight: float = deceleration_force if _acceleration_sign == 0.0 else acceleration_force
-	_current_torque = lerpf(_current_torque, max_torque * _acceleration_sign, weight * delta)
+	if is_burning: weight *= 3.0
+	var torque_target: float = max_torque if is_on_ground else max_torque / 2.0
+	_current_torque = lerpf(_current_torque, torque_target * _acceleration_sign, weight * delta)
 
 	# Hand brake
 	if Input.is_action_pressed("cmd_hand_brake"):
@@ -150,10 +165,16 @@ func _handle_damping(delta) -> void:
 func _handle_acceleration(delta: float) -> void:
 	apply_central_force(forward_vector.normalized() * _current_torque)
 
-	if _on_ground() && !is_throttling && !is_braking && speed < 0.5:
-		linear_damp = lerpf(linear_damp, 30.0, delta * 2.0)
+	var idle_stop: bool = !is_throttling && !is_braking && speed < 1.0
+	if _on_ground() && (idle_stop || is_idle_reving):
+		linear_damp = lerpf(linear_damp, 30.0, delta)
 	else:
 		linear_damp = linear_damping if _on_ground() else 0.0
+
+	if is_idle_reving && rpm > max_rpm * 0.8:
+		_rev_burn_time = 3.0
+	else:
+		_rev_burn_time = lerpf(_rev_burn_time, 0.0, delta)
 
 func _handle_cornering() -> void:
 	var force: float = cornering_force
@@ -193,8 +214,9 @@ func _apply_tilt_tweak() -> void:
 	var tilt: float = tilt_ratio * speed * 0.125 if speed < 8.0 else tilt_ratio
 	var drift_direction: float = sign(side_speed)
 	var tilt_x: float = drift_direction if _is_drifting else -input_direction.x
-
-	center_of_mass = Vector3(tilt_x * tilt / 2.0, center_of_mass.y, -_acceleration_sign * tilt + 0.1)
+	var tilt_dir := Vector3(tilt_x * tilt / 2.0, center_of_mass.y, -_acceleration_sign * tilt + 0.1)
+	if is_idle_reving: tilt_dir.z = -tilt_ratio / 2.0
+	center_of_mass = tilt_dir
 
 func _apply_visual_tweaks(delta: float) -> void:
 	# Wheels rotation
@@ -226,7 +248,7 @@ func _apply_visual_tweaks(delta: float) -> void:
 	)
 	
 func _draw_skid_marks() -> void:
-	var must_draw: bool = _is_drifting || is_braking
+	var must_draw: bool = _is_drifting || is_braking || is_burning
 	for w: Wheel in wheels:
 		if must_draw || (current_acceleration > 10 && !w.steering_wheel):
 			if !w.skid_mark_started: w.start_skid_mark()
@@ -242,14 +264,25 @@ func _compute_fake_gears_and_rpm(delta: float) -> void:
 		if -signed_speed > gears[i]:
 			_current_gear = i + 1
 
+	if !is_on_ground: _in_the_air_time += delta
+	else: _in_the_air_time = 0.0
+	
 	var rpm_target: float
-	if !is_on_ground:
+	var delta_weight: float = 5.0 if rpm_target > _rpm else 10.0
+	if _in_the_air_time > 0.2:
 		rpm_target = (max_rpm if is_throttling else idle_rpm)
+	elif is_idle_reving:
+		rpm_target = max_rpm
 	else:
-		rpm_target = speed * rpm_multiplier
-		if _is_drifting: rpm_target *= drift_rpm_multiplier
+		var speed_base: float = speed
+		if _current_gear >= 0 && _current_gear < 3:
+			var max_speed_gear: float = gears[_current_gear]
+			speed_base = speed * (30.0 / max_speed_gear)
+		rpm_target = speed_base * rpm_multiplier
+		if is_drifting && is_throttling: rpm_target *= drift_rpm_multiplier
+		elif is_burning: rpm_target += 3000.0
 		rpm_target = min(rpm_target + idle_rpm, max_rpm)
-	_rpm = lerpf(_rpm, rpm_target, delta * 3.0)
+	_rpm = lerpf(_rpm, rpm_target, delta * delta_weight)
 
 func _get_forward_vector() -> Vector3:
 	if !_front_raycast.is_colliding() && !_back_raycast.is_colliding():
