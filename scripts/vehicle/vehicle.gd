@@ -86,6 +86,7 @@ var _previous_speed: float
 var _has_just_landed_duration: float = 0.0
 var _is_drawing_skid_marks: bool
 var _in_the_air_time: float = 0.0
+var _shifting_delay: float = 0.0
 
 func _ready() -> void:
 	_front_raycast = %FrontRayCast
@@ -119,8 +120,6 @@ func _process(delta: float) -> void:
 	%LabelSpeed.text += "\n" + str(round(_current_torque)) + " nm"
 	%LabelSpeed.text += "\n" + str(int(rpm)) + " rpm"
 	%LabelSpeed.text += "\n" + "Gear " + current_gear
-	%LabelSpeed.text += "\n" + "_rev_burn_time " + str(_rev_burn_time)
-	%LabelSpeed.text += "\n" + "is_drifting " + str(is_drifting)
 
 func _physics_process(delta: float) -> void:
 	var forward_speed: float = speed
@@ -259,14 +258,28 @@ func _draw_skid_marks() -> void:
 			_is_drawing_skid_marks = false
 
 func _compute_fake_gears_and_rpm(delta: float) -> void:
+	# Gear
+	var previous_gear: String = current_gear
 	_current_gear = 0 if signed_speed <= 0 else -1
 	for i in range(gears.size()):
 		if -signed_speed > gears[i]:
 			_current_gear = i + 1
+	
+	# Shifting delay
+	if current_gear.is_valid_int() && previous_gear.is_valid_int() && int(current_gear) != int(previous_gear):
+		_shifting_delay = 2.0
+	else:
+		_shifting_delay = lerpf(_shifting_delay, 0.0, delta * 3.0)
 
+	if int(_shifting_delay) > 0:
+		_rpm = lerpf(_rpm, 0.0, delta)
+		return
+
+	# In the air max rpm
 	if !is_on_ground: _in_the_air_time += delta
 	else: _in_the_air_time = 0.0
 	
+	# Rpm
 	var rpm_target: float
 	var delta_weight: float = 5.0 if rpm_target > _rpm else 10.0
 	if _in_the_air_time > 0.2:
