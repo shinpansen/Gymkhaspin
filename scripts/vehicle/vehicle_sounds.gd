@@ -9,8 +9,7 @@ extends Node
 
 @export_group("Drift")
 @export var drif_stream: AudioStreamPlayer
-@export_range(0.0, 1.0) var drift_volume: float = 0.66
-@export var drift_fade_time: float = 20.0
+@export var drift_fade_time: float = 10.0
 
 var _engine_stream_players: Dictionary[int, AudioStreamPlayer] = {}
 var _min_rpm_key: int = 9999999
@@ -23,7 +22,7 @@ func _ready() -> void:
 		if key < _min_rpm_key: _min_rpm_key = key
 		if key > _max_rpm_key: _max_rpm_key = key
 		var player := AudioStreamPlayer.new()
-		add_child(player)
+		add_child(player) 
 		player.stream = engine_sounds[key]
 		player.volume_db = -80.0
 		player.bus = "Engine"
@@ -33,10 +32,10 @@ func _ready() -> void:
 		player.play()
 
 func _process(delta: float) -> void:
-	_play_engine_sound(delta)
-	# _play_drift_sound(delta)
+	_play_engine_sound()
+	_play_drift_sound(delta)
 
-func _play_engine_sound(delta) -> void:
+func _play_engine_sound() -> void:
 	if vehicle_source == null: return
 
 	# Upper and lower engine sound calculus regarding rpm
@@ -68,7 +67,7 @@ func _play_engine_sound(delta) -> void:
 func _play_drift_sound(delta: float) -> void:
 	if vehicle_source.is_drawing_skid_marks:
 		start_drift_sound(drif_stream, delta)
-		var pitch: float = (0.5 + vehicle_source.speed / 25.0) * 1.5
+		var pitch: float = (0.4 + vehicle_source.speed / 60.0)
 		drif_stream.pitch_scale = lerpf(drif_stream.pitch_scale, pitch, delta * 10.0)
 	else:
 		stop_drift_sound(drif_stream, delta)
@@ -84,7 +83,7 @@ func start_drift_sound(player: AudioStreamPlayer, delta: float):
 	_start_sound_tween.tween_property(
 		player, 
 		"volume_db", 
-		SoundsUtils.get_volume_db(drift_volume), 
+		0.0, 
 		delta * drift_fade_time
 	)
 

@@ -25,6 +25,8 @@ func _process(delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	var forward: Vector3 = vehicle_to_follow.global_transform.basis.z.normalized()
+	if !vehicle_to_follow.is_on_ground && vehicle_to_follow.in_the_air_time > 0.5:
+		forward = global_position.direction_to(vehicle_to_follow.global_position).normalized()
 	forward.y = 0.0
 	if vehicle_to_follow.signed_speed > 1.0: forward *= -1.0
 	var target_position: Vector3 = vehicle_to_follow.global_position

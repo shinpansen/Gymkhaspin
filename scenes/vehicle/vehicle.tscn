@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://dk2uf3vhv3qji" path="res://scripts/vehicle/vehicle.gd" id="1_udt0a"]
 [ext_resource type="PackedScene" uid="uid://bgoio1t8ht7nk" path="res://scenes/vehicle/wheel.tscn" id="3_2aj0h"]
 [ext_resource type="Script" uid="uid://dtkd2co8wm7ub" path="res://scripts/vehicle/vehicle_sounds.gd" id="4_015gl"]
-[ext_resource type="AudioStream" uid="uid://yggi1lfl0ckr" path="res://assets/sounds/drift_b_8bits.wav" id="5_3wsv0"]
 [ext_resource type="AudioStream" uid="uid://4a1ott0fap6k" path="res://assets/sounds/engine/engine_700rpm.wav" id="6_b5ahc"]
 [ext_resource type="AudioStream" uid="uid://bgu7s1mx5mf7j" path="res://assets/sounds/engine/engine_1000rpm.wav" id="7_umymo"]
 [ext_resource type="AudioStream" uid="uid://cgw251h3tmc4" path="res://assets/sounds/engine/engine_1500rpm.wav" id="8_ro36q"]
@@ -16,6 +15,7 @@
 [ext_resource type="AudioStream" uid="uid://bft4yv55x2n2x" path="res://assets/sounds/engine/engine_4500rpm.wav" id="14_28c2v"]
 [ext_resource type="AudioStream" uid="uid://gr5hwywpd4fo" path="res://assets/sounds/engine/engine_5000rpm.wav" id="15_at4gg"]
 [ext_resource type="AudioStream" uid="uid://binlv2kdrqb02" path="res://assets/sounds/engine/engine_5500rpm.wav" id="16_53pim"]
+[ext_resource type="AudioStream" uid="uid://b6l52mly6tfkt" path="res://assets/sounds/drift_c.wav" id="17_1ag4e"]
 [ext_resource type="AudioStream" uid="uid://sxhnkvxkcr8o" path="res://assets/sounds/engine/engine_6000rpm.wav" id="17_x0a3v"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_j5jx5"]
@@ -34,7 +34,6 @@ center_of_mass = Vector3(0, -0.5, 0.1)
 linear_damp = 1.0
 angular_damp = 3.0
 script = ExtResource("1_udt0a")
-tilt_ratio = 0.2
 wheels = [NodePath("Wheels/WheelFL"), NodePath("Wheels/WheelFR"), NodePath("Wheels/WheelBL"), NodePath("Wheels/WheelBR")]
 gears = Array[float]([8.0, 17.0, 25.0])
 
@@ -112,11 +111,11 @@ engine_sounds = Dictionary[int, AudioStream]({
 6000: ExtResource("17_x0a3v")
 })
 drif_stream = NodePath("../DriftStreamPlayer")
-drift_volume = 0.7
 
 [node name="DriftStreamPlayer" type="AudioStreamPlayer" parent="Sound" unique_id=1584159309]
-stream = ExtResource("5_3wsv0")
+stream = ExtResource("17_1ag4e")
 volume_db = -80.0
-max_polyphony = 2
+max_polyphony = 4
+bus = &"Drift"
 
 [editable path="Van"]

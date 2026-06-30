@@ -40,7 +40,7 @@ func _increase_score(delta: float) -> void:
 
 	# Sound
 	if int(previous_score) % 2 != 0 && int(_score) % 2 == 0:
-		score_stream.volume_db = SoundsUtils.get_volume_db(score_volume)
+		score_stream.volume_db = linear_to_db(score_volume)
 		score_stream.play()
 
 func _can_score() -> bool:

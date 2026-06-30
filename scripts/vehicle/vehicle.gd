@@ -1,16 +1,16 @@
 class_name Vehicle
 extends RigidBody3D
 
-@export var cornering_force: float = 12.0
+@export var cornering_force: float = 10.0
 @export var max_torque: float = 90.0
 @export var acceleration_force: float = 2.0
-@export var deceleration_force: float = 2.0
+@export var deceleration_force: float = 1.0
 @export var friction_force: float = 6.0
-@export var side_speed_drift: float = 5.0
-@export var side_speed_grip: float = 2.0
+@export var side_speed_drift: float = 5.5
+@export var side_speed_grip: float = 2.7
 @export var linear_damping: float = 0.5
 @export var suspension_damping: float = 8.0
-@export var tilt_ratio: float = 0.3
+@export var tilt_ratio: float = 0.2
 @export var wheels: Array[Wheel] = []
 @export var gears: Array[float] = []
 @export var idle_rpm: float = 713.0
@@ -40,7 +40,7 @@ var is_idle_reving: bool:
 	get: return _rev_test && speed < 2.0
 	set(_value): assert(false, "is_idle_reving is read-only")
 var is_burning: bool:
-	get: return int(_rev_burn_time) > 0
+	get: return int(_rev_burn_time) > 0 && is_throttling
 	set(_value): assert(false, "is_burning is read-only")
 var forward_vector: Vector3:
 	get: return _get_forward_vector()
@@ -54,6 +54,9 @@ var is_throttling: bool:
 var is_on_ground: bool:
 	get: return _on_ground()
 	set(_value): assert(false, "is_on_ground is read-only")
+var in_the_air_time: float:
+	get: return _in_the_air_time
+	set(_value): assert(false, "in_the_air_time is read-only")
 var is_braking: bool:
 	get: return Input.is_action_pressed("cmd_brake", 0.2) && signed_speed < 1 && _acceleration_sign == -1.0
 	set(_value): assert(false, "is_braking is read-only")
@@ -135,26 +138,33 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	state.linear_velocity -= up_velocity * _current_suspension_damping * state.step
 
 func _handle_inputs(delta: float) -> void:
-	# Torque
+	# Acceleration
 	_rev_test = Input.is_action_pressed("cmd_throttle") && Input.is_action_pressed("cmd_brake")
-	_acceleration_sign = (
-		0.0 if _rev_test
-		else -1.0 if Input.is_action_pressed("cmd_brake")
-		else 1.0 if Input.is_action_pressed("cmd_throttle")
-		else 0.0
-	)
-	var weight: float = deceleration_force if _acceleration_sign == 0.0 else acceleration_force
-	if is_burning: weight *= 3.0
-	var torque_target: float = max_torque if is_on_ground else max_torque / 2.0
-	_current_torque = lerpf(_current_torque, torque_target * _acceleration_sign, weight * delta)
+	if _rev_test:
+		_acceleration_sign = 0.0
+	elif Input.is_action_pressed("cmd_throttle"):
+		_acceleration_sign = 1.0
+	elif Input.is_action_pressed("cmd_brake"):
+		_acceleration_sign = -1.0
+	else:
+		_acceleration_sign = 0.0
+	# else:
+	# 	_acceleration_sign = -sign(signed_speed) * 0.5 if speed > 1.0 else 0.0
 
 	# Hand brake
 	if Input.is_action_pressed("cmd_hand_brake"):
-		_current_torque /= 2.0
+		_acceleration_sign = -0.25 if signed_speed < -1.0 else _acceleration_sign
 		_is_drifting = true
 		_hand_brake = true
 	else:
 		_hand_brake = false
+
+	# Torque
+	var m: float = 1.0 if _rev_test || speed < 1.0 else max(speed, 0.01) * 0.15 # Linear damp tweak for deceleration
+	var weight: float = deceleration_force / m if _acceleration_sign == 0.0 else acceleration_force
+	if is_burning: weight *= 3.0
+	var torque_target: float = max_torque if is_on_ground else max_torque / 2.0
+	_current_torque = lerpf(_current_torque, torque_target * _acceleration_sign, weight * delta)
 
 func _handle_damping(delta) -> void:
 	if _on_ground(): _current_suspension_damping = suspension_damping
@@ -249,7 +259,7 @@ func _apply_visual_tweaks(delta: float) -> void:
 func _draw_skid_marks() -> void:
 	var must_draw: bool = _is_drifting || is_braking || is_burning
 	for w: Wheel in wheels:
-		if must_draw || (current_acceleration > 10 && !w.steering_wheel):
+		if (must_draw || (current_acceleration > 10 && !w.steering_wheel)) && speed > 0.5:
 			if !w.skid_mark_started: w.start_skid_mark()
 			w.draw_skid_mark()
 			_is_drawing_skid_marks = true
@@ -281,7 +291,7 @@ func _compute_fake_gears_and_rpm(delta: float) -> void:
 	
 	# Rpm
 	var rpm_target: float
-	var delta_weight: float = 5.0 if rpm_target > _rpm else 10.0
+	var delta_weight: float = 5.0
 	if _in_the_air_time > 0.2:
 		rpm_target = (max_rpm if is_throttling else idle_rpm)
 	elif is_idle_reving:
